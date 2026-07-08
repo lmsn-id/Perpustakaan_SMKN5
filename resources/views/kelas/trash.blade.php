@@ -1,114 +1,108 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Trash Kelas')
 
-    <x-slot name="header">
-        Trash Kelas
-    </x-slot>
-
-    <div class="py-6">
-
-        <div class="max-w-7xl mx-auto">
-
-            <div class="bg-white p-6 rounded shadow">
-
-                <div class="mb-4">
-
+@section('content')
+<section class="content">
+    <div class="container-fluid">
+        @include('tampilan.alert')
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-trash mr-1"></i>
+                    Data Kelas Terhapus
+                </h3>
+                <div class="card-tools">
                     <a href="{{ route('kelas.index') }}"
-                       class="bg-blue-500 text-white px-4 py-2 rounded">
-
+                        class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-left"></i>
                         Kembali
-
                     </a>
-
                 </div>
-
-                <table class="w-full border">
-
+            </div>
+            <div class="card-body">
+                <table id="example1"
+                    class="table table-bordered table-striped">
                     <thead>
-
                         <tr>
-
-                            <th class="border p-3">No</th>
-                            <th class="border p-3">Jurusan</th>
-                            <th class="border p-3">Nama Kelas</th>
-                            <th class="border p-3">Aksi</th>
-
+                            <th width="60">No</th>
+                            <th>Jurusan</th>
+                            <th>Nama Kelas</th>
+                            <th width="170">Aksi</th>
                         </tr>
-
                     </thead>
-
                     <tbody>
-
                         @forelse($trash as $item)
-
                         <tr>
-
-                            <td class="border p-3">
-                                {{ $loop->iteration }}
+                            <td>{{ $loop->iteration }}</td>
+                            <td>
+                                {{ $item->jurusan->nama_jurusan ?? '-' }}
                             </td>
-
-                            <td class="border p-3">
-                                {{ $item->jurusan->nama_jurusan }}
-                            </td>
-
-                            <td class="border p-3">
+                            <td>
                                 {{ $item->nama_kelas }}
                             </td>
-
-                            <td class="border p-3">
-
-                                <div class="flex gap-2">
-
-                                    <a href="{{ route('kelas.restore', $item->id) }}"
-                                       class="w-24 text-center bg-green-500 text-white px-3 py-2 rounded">
-
-                                        Restore
-
-                                    </a>
-
-                                    <form action="{{ route('kelas.forceDelete', $item->id) }}"
-                                          method="POST">
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="submit"
-                                                class="w-32 bg-red-500 text-white px-3 py-2 rounded">
-
-                                            Delete
-
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
+                            <td>
+                                <a href="{{ route('kelas.restore',$item->id) }}"
+                                    class="btn btn-success btn-sm">
+                                    <i class="fas fa-undo"></i>
+                                    Restore
+                                </a>
+                                <form action="{{ route('kelas.forceDelete',$item->id) }}"
+                                    method="POST"
+                                    style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Data akan dihapus permanen. Lanjutkan?')">
+                                        <i class="fas fa-trash"></i>
+                                        Delete
+                                    </button>
+                                </form>
                             </td>
-
                         </tr>
 
                         @empty
-
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                Tidak ada data di Trash.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                    <tfoot>
                         <tr>
 
-                            <td colspan="4"
-                                class="text-center p-4">
-
-                                Trash kosong
-
-                            </td>
+                            <th>No</th>
+                            <th>Jurusan</th>
+                            <th>Nama Kelas</th>
+                            <th>Aksi</th>
 
                         </tr>
-
-                        @endforelse
-
-                    </tbody>
-
+                    </tfoot>
                 </table>
-
             </div>
-
         </div>
-
     </div>
+</section>
+@endsection
 
-</x-app-layout>
+@section('javascript')
+
+<script>
+    $(function() {
+        $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            buttons: [
+                "copy",
+                "csv",
+                "excel",
+                "pdf",
+                "print",
+                "colvis"
+            ]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+</script>
+@endsection

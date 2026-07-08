@@ -1,67 +1,84 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Edit Kelas')
 
-    <x-slot name="header">
-        Edit Kelas
-    </x-slot>
+@section('content')
 
-    <div class="py-6">
-
-        <div class="max-w-4xl mx-auto">
-
-            <div class="bg-white p-6 rounded shadow">
-
-                <form action="{{ route('kelas.update', $kela->id) }}"
-                      method="POST">
-
-                    @csrf
-                    @method('PUT')
-
-                    <div class="mb-4">
-
-                        <label>Jurusan</label>
-
-                        <select name="jurusan_id"
-                                class="w-full border rounded p-2">
-
-                            @foreach($jurusan as $item)
-
-                                <option value="{{ $item->id }}"
-                                    {{ $kela->jurusan_id == $item->id ? 'selected' : '' }}>
-
-                                    {{ $item->nama_jurusan }}
-
-                                </option>
-
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-                    <div class="mb-4">
-
-                        <label>Nama Kelas</label>
-
-                        <input type="text"
-                               name="nama_kelas"
-                               value="{{ $kela->nama_kelas }}"
-                               class="w-full border rounded p-2">
-
-                    </div>
-
-                    <button type="submit"
-                            class="bg-yellow-500 text-white px-4 py-2 rounded">
-
-                        Update
-
-                    </button>
-
-                </form>
-
+<section class="content">
+    <div class="container-fluid">
+        @include('tampilan.alert')
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit mr-1"></i>
+                    Edit Data Kelas
+                </h3>
+                <div class="card-tools">
+                    <a href="{{ route('kelas.index') }}"
+                        class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                        Kembali
+                    </a>
+                </div>
             </div>
-
+            <form action="{{ route('kelas.update',$kela->id) }}"
+                method="POST">
+                @csrf
+                @method('PUT')
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jurusan <span class="text-danger">*</span></label>
+                                <select name="jurusan_id"
+                                    class="form-control @error('jurusan_id') is-invalid @enderror">
+                                    <option value="">
+                                        -- Pilih Jurusan --
+                                    </option>
+                                    @foreach($jurusan as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ old('jurusan_id',$kela->jurusan_id)==$item->id ? 'selected' : '' }}>
+                                        {{ $item->nama_jurusan }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusan_id')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nama Kelas <span class="text-danger">*</span></label>
+                                <input type="text"
+                                    name="nama_kelas"
+                                    value="{{ old('nama_kelas',$kela->nama_kelas) }}"
+                                    class="form-control @error('nama_kelas') is-invalid @enderror"
+                                    placeholder="Masukkan Nama Kelas">
+                                @error('nama_kelas')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit"
+                        class="btn btn-warning">
+                        <i class="fas fa-save"></i>
+                        Update
+                    </button>
+                    <a href="{{ route('kelas.index') }}"
+                        class="btn btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Batal
+                    </a>
+                </div>
+            </form>
         </div>
-
     </div>
-
-</x-app-layout>
+</section>
+@endsection

@@ -1,339 +1,296 @@
-<x-app-layout>
+@extends('tampilan.app')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Detail Peminjaman Buku
-        </h2>
-    </x-slot>
+@section('title','Detail Peminjaman Buku')
 
-    <div class="py-6">
+@section('content')
 
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+<section class="content">
+    <div class="container-fluid">
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="row">
+            <div class="col-12">
 
-                {{-- Header --}}
-                <div class="p-6 border-b border-gray-200">
+                <div class="card card-primary card-outline">
 
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        Detail Peminjaman
-                    </h2>
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-book mr-1"></i>
+                            Detail Peminjaman Buku
+                        </h3>
+                    </div>
 
-                    <p class="text-sm text-gray-500 mt-1">
-                        Informasi lengkap data peminjaman buku
-                    </p>
+                    <div class="card-body">
 
-                </div>
+                        <div class="row">
 
-                <div class="p-6">
+                            {{-- Cover --}}
+                            <div class="col-md-4">
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                @if($pinjam->buku->cover)
 
-                        {{-- Cover Buku --}}
-                        <div>
+                                <img src="{{ asset('storage/'.$pinjam->buku->cover) }}"
+                                    class="img-fluid img-thumbnail"
+                                    style="width:100%;">
 
-                            @if($pinjam->buku->cover)
+                                @else
 
-                                <img src="{{ asset('storage/' . $pinjam->buku->cover) }}"
-                                     class="w-full rounded-lg shadow">
-
-                            @else
-
-                                <div class="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
+                                <div class="border text-center bg-light d-flex align-items-center justify-content-center"
+                                    style="height:500px;">
 
                                     Tidak Ada Cover
 
                                 </div>
 
-                            @endif
+                                @endif
 
-                        </div>
+                            </div>
 
-                        {{-- Detail --}}
-                        <div class="md:col-span-2">
+                            {{-- Detail --}}
+                            <div class="col-md-8">
 
-                            <div class="space-y-5">
+                                <h2 class="font-weight-bold mb-1">
+                                    {{ $pinjam->buku->judul }}
+                                </h2>
 
-                                {{-- Judul --}}
-                                <div>
+                                <p class="text-muted mb-4">
+                                    {{ $pinjam->buku->pengarang }}
+                                </p>
 
-                                    <h3 class="text-2xl font-bold text-gray-800">
+                                <div class="row">
 
-                                        {{ $pinjam->buku->judul }}
+                                    <div class="col-md-6">
 
-                                    </h3>
-
-                                    <p class="text-gray-500 mt-1">
-
-                                        {{ $pinjam->buku->pengarang }}
-
-                                    </p>
-
-                                </div>
-
-                                {{-- Informasi Buku --}}
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                                    <div>
-
-                                        <p class="text-sm text-gray-500">
-                                            Kode Buku
-                                        </p>
-
-                                        <p class="font-semibold text-gray-800">
-                                            {{ $pinjam->buku->kode_buku }}
-                                        </p>
-
-                                    </div>
-
-                                    <div>
-
-                                        <p class="text-sm text-gray-500">
-                                            Penerbit
-                                        </p>
-
-                                        <p class="font-semibold text-gray-800">
-                                            {{ $pinjam->buku->penerbit }}
-                                        </p>
-
-                                    </div>
-
-                                    <div>
-
-                                        <p class="text-sm text-gray-500">
-                                            Tahun Terbit
-                                        </p>
-
-                                        <p class="font-semibold text-gray-800">
-                                            {{ $pinjam->buku->tahun_terbit }}
-                                        </p>
-
-                                    </div>
-
-                                    <div>
-
-                                        <p class="text-sm text-gray-500">
-                                            Kategori
-                                        </p>
-
-                                        <p class="font-semibold text-gray-800">
-                                            {{ $pinjam->buku->kategori->nama_kategori }}
-                                        </p>
-
-                                    </div>
-
-                                    <div>
-
-                                        <p class="text-sm text-gray-500">
-                                            Rak
-                                        </p>
-
-                                        <p class="font-semibold text-gray-800">
-                                            {{ $pinjam->buku->rak->nama_rak }}
-                                        </p>
-
-                                    </div>
-
-                                    <div>
-
-                                        <p class="text-sm text-gray-500">
-                                            Stok Buku
-                                        </p>
-
-                                        <p class="font-semibold text-gray-800">
-                                            {{ $pinjam->buku->stok }}
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                                {{-- Informasi Peminjaman --}}
-                                <div class="border-t pt-6">
-
-                                    <h4 class="text-lg font-bold text-gray-800 mb-4">
-
-                                        Informasi Peminjaman
-
-                                    </h4>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                                        <div>
-
-                                            <p class="text-sm text-gray-500">
-                                                Nama Peminjam
-                                            </p>
-
-                                            <p class="font-semibold text-gray-800">
-                                                {{ $pinjam->user->name }}
-                                            </p>
-
-                                        </div>
-
-                                        <div>
-
-                                            <p class="text-sm text-gray-500">
-                                                Durasi Pinjam
-                                            </p>
-
-                                            <p class="font-semibold text-gray-800">
-                                                {{ $pinjam->durasi_pinjam }} Hari
-                                            </p>
-
-                                        </div>
-
-                                        <div>
-
-                                            <p class="text-sm text-gray-500">
-                                                Tanggal Pinjam
-                                            </p>
-
-                                            <p class="font-semibold text-gray-800">
-                                                {{ $pinjam->tanggal_pinjam }}
-                                            </p>
-
-                                        </div>
-
-                                        <div>
-
-                                            <p class="text-sm text-gray-500">
-                                                Tanggal Kembali
-                                            </p>
-
-                                            <p class="font-semibold text-gray-800">
-                                                {{ $pinjam->tanggal_kembali }}
-                                            </p>
-
-                                        </div>
-
-                                        <div>
-
-                                            <p class="text-sm text-gray-500">
-                                                Status
-                                            </p>
-
-                                            <div class="mt-1">
-
-                                                @if($pinjam->status == 'pending')
-
-                                                    <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">
-
-                                                        Pending
-
-                                                    </span>
-
-                                                @elseif($pinjam->status == 'dipinjam')
-
-                                                    <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
-
-                                                        Dipinjam
-
-                                                    </span>
-
-                                                @else
-
-                                                    <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
-
-                                                        Dikembalikan
-
-                                                    </span>
-
-                                                @endif
-
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Kode Buku</span>
+                                                <span class="info-box-number">
+                                                    {{ $pinjam->buku->kode_buku }}
+                                                </span>
                                             </div>
+                                        </div>
 
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Penerbit</span>
+                                                <span class="info-box-number">
+                                                    {{ $pinjam->buku->penerbit }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Tahun Terbit</span>
+                                                <span class="info-box-number">
+                                                    {{ $pinjam->buku->tahun_terbit }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Kategori</span>
+                                                <span class="info-box-number">
+                                                    {{ $pinjam->buku->kategori->nama_kategori }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Rak</span>
+                                                <span class="info-box-number">
+                                                    {{ $pinjam->buku->rak->nama_rak }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="info-box bg-light">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Stok Buku</span>
+                                                <span class="info-box-number">
+                                                    {{ $pinjam->buku->stok }}
+                                                </span>
+                                            </div>
                                         </div>
 
                                     </div>
 
                                 </div>
 
-                                {{-- Deskripsi --}}
-                                <div class="border-t pt-6">
+                                <hr>
 
-                                    <h4 class="text-lg font-bold text-gray-800 mb-2">
+                                <h4 class="mb-3">
+                                    Informasi Peminjaman
+                                </h4>
+                                <div class="row">
 
-                                        Deskripsi Buku
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nama Peminjam</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $pinjam->user->name }}" readonly>
+                                        </div>
+                                    </div>
 
-                                    </h4>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Durasi Pinjam</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $pinjam->durasi_pinjam }} Hari" readonly>
+                                        </div>
+                                    </div>
 
-                                    <p class="text-gray-700 leading-relaxed">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Tanggal Pinjam</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $pinjam->tanggal_pinjam }}" readonly>
+                                        </div>
+                                    </div>
 
-                                        {{ $pinjam->buku->deskripsi ?? 'Tidak ada deskripsi buku.' }}
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Tanggal Kembali</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $pinjam->tanggal_kembali }}" readonly>
+                                        </div>
+                                    </div>
 
-                                    </p>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <br>
+
+                                            @if($pinjam->status=='pending')
+                                            <span class="badge badge-warning px-3 py-2">
+                                                Pending
+                                            </span>
+                                            @elseif($pinjam->status=='dipinjam')
+                                            <span class="badge badge-primary px-3 py-2">
+                                                Dipinjam
+                                            </span>
+                                            @elseif($pinjam->status=='dikembalikan')
+                                            <span class="badge badge-success px-3 py-2">
+                                                Dikembalikan
+                                            </span>
+                                            @elseif($pinjam->status=='dibatalkan')
+                                            <span class="badge badge-secondary px-3 py-2">
+                                                Dibatalkan
+                                            </span>
+                                            @endif
+
+                                        </div>
+                                    </div>
 
                                 </div>
 
-                                {{-- Tombol --}}
-                                <div class="pt-6 flex flex-wrap gap-3">
+                                <hr>
 
+                                <h4 class="mb-3">
+                                    Deskripsi Buku
+                                </h4>
+
+                                <div class="callout callout-info">
+
+                                    {{ $pinjam->buku->deskripsi ?? 'Tidak ada deskripsi buku.' }}
+
+                                </div>
+
+                                <hr>
+
+                                <div class="mt-3">
                                     <a href="{{ route('pinjam.index') }}"
-                                       class="inline-flex items-center px-5 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 transition">
-
-                                        Kembali
-
+                                        class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Kembali
                                     </a>
 
-                                    @if(Auth::user()->role == 'admin')
+                                    @if(Auth::user()->role=='admin')
 
-                                        {{-- Setujui --}}
-                                        @if($pinjam->status == 'pending')
+                                    @if($pinjam->status=='pending')
 
-                                            <form action="{{ route('pinjam.setujui', $pinjam->id) }}"
-                                                  method="POST">
+                                    <form action="{{ route('pinjam.setujui',$pinjam->id) }}"
+                                        method="POST"
+                                        class="d-inline">
 
-                                                @csrf
-                                                @method('PUT')
+                                        @csrf
+                                        @method('PUT')
 
-                                                <button type="submit"
-                                                        class="inline-flex items-center px-5 py-2 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-600 transition">
+                                        <button type="submit"
+                                            class="btn btn-success"
+                                            onclick="return confirm('Setujui peminjaman ini?')">
 
-                                                    Setujui
+                                            <i class="fas fa-check"></i>
+                                            Setujui
 
-                                                </button>
+                                        </button>
 
-                                            </form>
+                                    </form>
 
-                                        @endif
+                                    @endif
 
-                                        {{-- Kembalikan --}}
-                                        @if($pinjam->status == 'dipinjam')
+                                    @if($pinjam->status=='dipinjam')
 
-                                            <form action="{{ route('pinjam.kembalikan', $pinjam->id) }}"
-                                                  method="POST">
+                                    <form action="{{ route('pinjam.kembalikan',$pinjam->id) }}"
+                                        method="POST"
+                                        class="d-inline">
 
-                                                @csrf
-                                                @method('PUT')
+                                        @csrf
+                                        @method('PUT')
 
-                                                <button type="submit"
-                                                        class="inline-flex items-center px-5 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 transition">
+                                        <button type="submit"
+                                            class="btn btn-warning"
+                                            onclick="return confirm('Buku sudah dikembalikan?')">
 
-                                                    Kembalikan
+                                            <i class="fas fa-undo"></i>
+                                            Kembalikan
 
-                                                </button>
+                                        </button>
 
-                                            </form>
+                                    </form>
 
-                                        @endif
+                                    @endif
 
                                     @endif
 
                                 </div>
 
                             </div>
+                            {{-- End Detail --}}
 
                         </div>
+                        {{-- End Row --}}
 
                     </div>
+                    {{-- End Card Body --}}
 
                 </div>
+                {{-- End Card --}}
 
             </div>
-
         </div>
 
     </div>
+</section>
 
-</x-app-layout>
+@endsection

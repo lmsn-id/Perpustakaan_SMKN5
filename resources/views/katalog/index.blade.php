@@ -1,228 +1,161 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Halaman Katalog')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Katalog Buku
-        </h2>
-    </x-slot>
+@section('content')
+<section class="content">
+  <div class="container-fluid">
+    <!-- Main content -->
+{{-- Search --}}
+<div class="card">
 
-    <div class="py-6">
+    <div class="card-header">
+        <h3 class="card-title">
 
-        <div class="max-w-7xl mx-auto">
+            <i class="fas fa-search mr-2"></i>
 
-            {{-- Alert Success --}}
-            @if(session('success'))
+            Pencarian Buku
 
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-
-                    {{ session('success') }}
-
-                </div>
-
-            @endif
-
-            {{-- Alert Error --}}
-            @if(session('error'))
-
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-
-                    {{ session('error') }}
-
-                </div>
-
-            @endif
-
-            {{-- Search --}}
-            <div class="bg-white p-6 rounded-lg shadow mb-6">
-
-                <form action="{{ route('katalog.index') }}"
-                      method="GET">
-
-                    <div class="flex gap-2">
-
-                        <input type="text"
-                               name="search"
-                               value="{{ request('search') }}"
-                               placeholder="Cari judul, pengarang, penerbit, kode buku..."
-                               class="w-full border rounded-lg p-3 focus:ring focus:ring-blue-200">
-
-                        <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-6 rounded-lg">
-
-                            Cari
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-            {{-- Grid Buku --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                @forelse($buku as $item)
-
-                    <div class="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition duration-300">
-
-                        {{-- Cover --}}
-                        @if($item->cover)
-
-                            <img src="{{ asset('storage/' . $item->cover) }}"
-                                 class="w-full h-72 object-cover">
-
-                        @else
-
-                            <div class="w-full h-72 bg-gray-200 flex items-center justify-center text-gray-500">
-
-                                Tidak Ada Cover
-
-                            </div>
-
-                        @endif
-
-                        <div class="p-4">
-
-                            {{-- Judul --}}
-                            <h2 class="font-bold text-lg min-h-[60px] text-gray-800">
-
-                                {{ $item->judul }}
-
-                            </h2>
-
-                            {{-- Pengarang --}}
-                            <p class="text-sm text-gray-600 mt-2">
-
-                                {{ $item->pengarang }}
-
-                            </p>
-
-                            {{-- Detail --}}
-                            <div class="mt-3 text-sm space-y-1">
-
-                                <p>
-                                    <span class="font-semibold">
-                                        Kategori:
-                                    </span>
-
-                                    {{ $item->kategori->nama_kategori }}
-                                </p>
-
-                                <p>
-                                    <span class="font-semibold">
-                                        Rak:
-                                    </span>
-
-                                    {{ $item->rak->nama_rak }}
-                                </p>
-
-                                <p>
-                                    <span class="font-semibold">
-                                        Kode:
-                                    </span>
-
-                                    {{ $item->kode_buku }}
-                                </p>
-
-                                <p>
-                                    <span class="font-semibold">
-                                        Tahun:
-                                    </span>
-
-                                    {{ $item->tahun_terbit }}
-                                </p>
-
-                                <p>
-                                    <span class="font-semibold">
-                                        Stok:
-                                    </span>
-
-                                    @if($item->stok > 0)
-
-                                        <span class="text-green-600 font-semibold">
-
-                                            {{ $item->stok }} tersedia
-
-                                        </span>
-
-                                    @else
-
-                                        <span class="text-red-600 font-semibold">
-
-                                            Habis
-
-                                        </span>
-
-                                    @endif
-
-                                </p>
-
-                            </div>
-
-                            {{-- Tombol --}}
-                            <div class="mt-4 space-y-2">
-
-                                {{-- Detail --}}
-                                <a href="{{ route('katalog.show', $item->id) }}"
-                                   class="w-full inline-block text-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-
-                                    Detail Buku
-
-                                </a>
-
-                                {{-- Tombol Pinjam --}}
-                                @if(Auth::user()->role == 'anggota')
-
-                                    @if($item->stok > 0)
-
-                                        <a href="{{ route('pinjam.create', $item->id) }}"
-                                           class="w-full inline-block text-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
-
-                                            Pinjam Buku
-
-                                        </a>
-
-                                    @else
-
-                                        <button disabled
-                                                class="w-full bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed">
-
-                                            Stok Habis
-
-                                        </button>
-
-                                    @endif
-
-                                @endif
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                @empty
-
-                    <div class="col-span-4 bg-white p-10 rounded-lg shadow text-center text-gray-500">
-
-                        Buku tidak ditemukan
-
-                    </div>
-
-                @endforelse
-
-            </div>
-
-            {{-- Pagination --}}
-            <div class="mt-6">
-
-                {{ $buku->links() }}
-
-            </div>
-
-        </div>
-
+        </h3>
     </div>
+    <div class="card-body">
+        <form action="{{ route('katalog.index') }}" method="GET">
+            <div class="input-group">
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Cari judul, pengarang, penerbit, kode buku..."
+                       value="{{ request('search') }}">
+                <div class="input-group-append">
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                        Cari
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-</x-app-layout>
+{{-- Grid Buku --}}
+<div class="row">
+    @forelse($buku as $item)
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card card-primary card-outline">
+                {{-- Cover --}}
+                @if($item->cover)
+                    <img src="{{ asset('storage/'.$item->cover) }}"
+                         class="card-img-top"
+                         style="height:330px; object-fit:cover;">
+                @else
+                    <div class="d-flex align-items-center justify-content-center bg-light"
+                         style="height:330px;">
+                        <span class="text-muted">
+                            Tidak Ada Cover
+                        </span>
+                    </div>
+                @endif
+                <div class="card-body">
+                    <h5 class="font-weight-bold"
+                        style="height:55px; overflow:hidden;">
+                        {{ $item->judul }}
+                    </h5>
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-user-edit"></i>
+                        {{ $item->pengarang }}
+                    </p>
+                    <table class="table table-sm table-borderless mb-3">
+                        <tr>
+                            <th width="35%">Kategori</th>
+                            <td>{{ $item->kategori->nama_kategori }}</td>
+                        </tr>
+                        <tr>
+                            <th>Rak</th>
+                            <td>{{ $item->rak->nama_rak }}</td>
+                        </tr>
+                        <tr>
+                            <th>Kode</th>
+                            <td>{{ $item->kode_buku }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tahun</th>
+                            <td>{{ $item->tahun_terbit }}</td>
+                        </tr>
+                        <tr>
+                            <th>Stok</th>
+                            <td>
+                                @if($item->stok > 0)
+                                    <span class="badge badge-success">
+                                        {{ $item->stok }} tersedia
+                                    </span>
+                                @else
+                                    <span class="badge badge-danger">
+                                        Stok Habis
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ route('katalog.show',$item->id) }}"
+                       class="btn btn-primary btn-block">
+                        <i class="fas fa-book-open mr-1"></i>
+                        Detail Buku
+                    </a>
+                    @if(Auth::user()->role == 'anggota')
+                        @if($item->stok > 0)
+                            <a href="{{ route('pinjam.create',$item->id) }}"
+                               class="btn btn-success btn-block">
+                                <i class="fas fa-hand-holding mr-1"></i>
+                                Pinjam Buku
+                            </a>
+                        @else
+                            <button class="btn btn-secondary btn-block"
+                                    disabled>
+                                <i class="fas fa-times-circle mr-1"></i>
+                                Stok Habis
+                            </button>
+                        @endif
+                    @endif
+                </div>
+            </div>
+        </div>
+    @empty
+        <div class="col-12">
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                Buku tidak ditemukan.
+            </div>
+        </div>
+    @endforelse
+</div>
+
+{{-- Pagination --}}
+<div class="d-flex justify-content-end mt-3">
+
+    {{ $buku->links() }}
+
+</div>
+</section>
+@endsection
+
+@section('javascript')
+        <script>
+          $(function () {
+            $("#example1").DataTable({
+              "responsive": true, "lengthChange": false, "autoWidth": false,
+              "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+              "paging": true,
+              "lengthChange": false,
+              "searching": false,
+              "ordering": true,
+              "info": true,
+              "autoWidth": false,
+              "responsive": true,
+            });
+          });
+        </script>
+@endsection

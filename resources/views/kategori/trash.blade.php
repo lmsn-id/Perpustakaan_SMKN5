@@ -1,104 +1,113 @@
-<x-app-layout>
+@extends('tampilan.app')
 
-    <x-slot name="header">
-        Trash Kategori
-    </x-slot>
+@section('title', 'Trash Kategori')
 
-    <div class="py-6">
+@section('content')
 
-        <div class="max-w-7xl mx-auto">
+<section class="content">
 
-            <div class="bg-white p-6 rounded shadow">
+    <div class="container-fluid">
 
-                <div class="mb-4">
+        @include('tampilan.alert')
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+                    Trash Kategori
+                </h3>
+
+                <div class="card-tools">
 
                     <a href="{{ route('kategori.index') }}"
-                       class="bg-blue-500 text-white px-4 py-2 rounded">
+                        class="btn btn-secondary btn-sm">
 
+                        <i class="fas fa-arrow-left"></i>
                         Kembali
 
                     </a>
 
                 </div>
 
-                <table class="w-full border">
+            </div>
 
-                    <thead>
+            <div class="card-body">
 
-                        <tr>
+                <div class="table-responsive">
 
-                            <th class="border p-3">No</th>
-                            <th class="border p-3">Nama Kategori</th>
-                            <th class="border p-3">Aksi</th>
+                    <table class="table table-bordered table-striped table-hover">
 
-                        </tr>
+                        <thead>
 
-                    </thead>
+                            <tr>
+                                <th width="60">No</th>
+                                <th>Nama Kategori</th>
+                                <th width="170" class="text-center">Aksi</th>
+                            </tr>
 
-                    <tbody>
+                        </thead>
 
-                        @forelse($trash as $item)
+                        <tbody>
 
-                        <tr>
+                            @forelse($trash as $item)
 
-                            <td class="border p-3">
-                                {{ $loop->iteration }}
-                            </td>
+                            <tr>
 
-                            <td class="border p-3">
-                                {{ $item->nama_kategori }}
-                            </td>
+                                <td>{{ $loop->iteration }}</td>
 
-                            <td class="border p-3">
+                                <td>{{ $item->nama_kategori }}</td>
 
-                                <div class="flex gap-2">
+                                <td class="text-center">
 
                                     <a href="{{ route('kategori.restore', $item->id) }}"
-                                       class="w-24 text-center bg-green-500 text-white px-3 py-2 rounded">
+                                        class="btn btn-success btn-sm"
+                                        onclick="return confirm('Restore data ini?')">
 
-                                        Restore
+                                        <i class="fas fa-undo"></i>
 
                                     </a>
 
                                     <form action="{{ route('kategori.forceDelete', $item->id) }}"
-                                          method="POST">
+                                        method="POST"
+                                        style="display:inline-block;">
 
                                         @csrf
                                         @method('DELETE')
 
                                         <button type="submit"
-                                                class="w-32 bg-red-500 text-white px-3 py-2 rounded">
+                                            class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Data akan dihapus permanen. Lanjutkan?')">
 
-                                            Delete
+                                            <i class="fas fa-trash"></i>
 
                                         </button>
 
                                     </form>
 
-                                </div>
+                                </td>
 
-                            </td>
+                            </tr>
 
-                        </tr>
+                            @empty
 
-                        @empty
+                            <tr>
 
-                        <tr>
+                                <td colspan="3" class="text-center text-muted">
 
-                            <td colspan="3"
-                                class="text-center p-4">
+                                    Tidak ada data di Trash.
 
-                                Trash kosong
+                                </td>
 
-                            </td>
+                            </tr>
 
-                        </tr>
+                            @endforelse
 
-                        @endforelse
+                        </tbody>
 
-                    </tbody>
+                    </table>
 
-                </table>
+                </div>
 
             </div>
 
@@ -106,4 +115,6 @@
 
     </div>
 
-</x-app-layout>
+</section>
+
+@endsection

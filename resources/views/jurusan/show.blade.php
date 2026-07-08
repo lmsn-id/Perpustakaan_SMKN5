@@ -1,18 +1,88 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Detail Jurusan')
 
-    <x-slot name="header">
-        Detail Jurusan
-    </x-slot>
+@section('content')
 
-    <div class="py-6">
+<section class="content">
 
-        <div class="max-w-4xl mx-auto">
+    <div class="container-fluid">
 
-            <div class="bg-white p-6 rounded shadow">
+        <div class="row justify-content-center">
 
-                <h2 class="text-2xl font-bold">
-                    {{ $jurusan->nama_jurusan }}
-                </h2>
+            <div class="col-md-12">
+
+                <div class="card card-primary">
+
+                    <div class="card-header">
+
+                        <h3 class="card-title">
+
+                            Detail Data Jurusan
+
+                        </h3>
+
+                        <div class="card-tools">
+
+                            <a href="{{ route('jurusan.index') }}"
+                                class="btn btn-secondary btn-sm">
+
+                                <i class="fas fa-arrow-left"></i>
+
+                                Kembali
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <table class="table table-bordered">
+
+                            <tr>
+
+                                <th width="250">
+
+                                    Nama Jurusan
+
+                                </th>
+
+                                <td>
+
+                                    {{ $jurusan->nama_jurusan }}
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                    <div class="card-footer">
+
+                        <a href="{{ route('jurusan.edit',$jurusan->id) }}"
+                            class="btn btn-warning">
+
+                            <i class="fas fa-edit"></i>
+
+                            Edit
+
+                        </a>
+
+                        <a href="{{ route('jurusan.index') }}"
+                            class="btn btn-secondary">
+
+                            <i class="fas fa-arrow-left"></i>
+
+                            Kembali
+
+                        </a>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -20,4 +90,6 @@
 
     </div>
 
-</x-app-layout>
+</section>
+
+@endsection

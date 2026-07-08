@@ -14,6 +14,9 @@ use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\ManualPinjamController;
+use App\Http\Controllers\PembayaranDendaController;
+use App\Http\Controllers\PeminjamanManualController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,7 +35,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', [FrontController::class, 'index']);
-Route::get('/detail-buku/{id}',[FrontController::class, 'detailBuku'])
+Route::get('/detail-buku/{id}', [FrontController::class, 'detailBuku'])
     ->name('front.detail-buku');
 
 Route::get('/redirect', function () {
@@ -59,7 +62,7 @@ Route::middleware(['auth', 'role:anggota'])->group(function () {
 Route::put('/pinjam/{id}/batal', [PinjamController::class, 'batal'])
     ->name('pinjam.batal');
 
-Route::middleware(['auth', 'role:admin'])->group(function () {   
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('member', MemberController::class);
     Route::get('/member-trash', [MemberController::class, 'trash'])
         ->name('member.trash');
@@ -103,18 +106,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('rak.restore');
     Route::delete('/rak/force-delete/{id}', [RakController::class, 'forceDelete'])
         ->name('rak.forceDelete');
-    
+
     Route::resource('buku', BukuController::class);
     Route::get('/buku-trash', [BukuController::class, 'trash'])
-    ->name('buku.trash');
+        ->name('buku.trash');
     Route::get('/buku-restore/{id}', [BukuController::class, 'restore'])
         ->name('buku.restore');
     Route::delete('/buku-force-delete/{id}', [BukuController::class, 'forceDelete'])
         ->name('buku.forceDelete');
     Route::get('/buku-export', [BukuController::class, 'exportExcel'])
-    ->name('buku.export');
+        ->name('buku.export');
     Route::post('/buku-import', [BukuController::class, 'importExcel'])
-    ->name('buku.import');
+        ->name('buku.import');
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
         ->name('dashboard');
@@ -126,18 +129,62 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/pengembalian/{id}/proses', [PengembalianController::class, 'proses'])
         ->name('pengembalian.proses');
 
-    Route::get('/laporan/peminjaman',
-        [LaporanPeminjamanController::class, 'index'])
+    Route::get(
+        '/laporan/peminjaman',
+        [LaporanPeminjamanController::class, 'index']
+    )
         ->name('laporan.peminjaman');
 
-    Route::get('/laporan/peminjaman/pdf',
-        [LaporanPeminjamanController::class, 'pdf'])
+    Route::get(
+        '/laporan/peminjaman/pdf',
+        [LaporanPeminjamanController::class, 'pdf']
+    )
         ->name('laporan.peminjaman.pdf');
 
-    Route::get('/laporan/peminjaman/excel',
-        [LaporanPeminjamanController::class, 'excel'])
+    Route::get(
+        '/laporan/peminjaman/excel',
+        [LaporanPeminjamanController::class, 'excel']
+    )
         ->name('laporan.peminjaman.excel');
 
+    Route::prefix('peminjaman-manual')->group(function () {
+        Route::get('/create', [PeminjamanManualController::class, 'create'])
+            ->name('peminjaman-manual.create');
+        Route::post('/', [PeminjamanManualController::class, 'store'])
+            ->name('peminjaman-manual.store');
+        Route::get('/{id}/edit', [PeminjamanManualController::class, 'edit'])
+            ->name('peminjaman-manual.edit');
+        Route::put('/{id}', [PeminjamanManualController::class, 'update'])
+            ->name('peminjaman-manual.update');
+        Route::get('/search-member', [PeminjamanManualController::class, 'searchMember'])
+            ->name('peminjaman-manual.searchMember');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PEMBAYARAN DENDA
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/pembayaran-denda', [PembayaranDendaController::class, 'index'])
+        ->name('pembayaran-denda.index');
+    Route::get('/pembayaran-denda/create/{pinjam_id}', [PembayaranDendaController::class, 'create'])
+        ->name('pembayaran-denda.create');
+    Route::post('/pembayaran-denda', [PembayaranDendaController::class, 'store'])
+        ->name('pembayaran-denda.store');
+    Route::get('/pembayaran-denda/cetak', [PembayaranDendaController::class, 'cetak'])
+        ->name('pembayaran-denda.cetak');
+    Route::get('/pembayaran-denda/excel', [PembayaranDendaController::class, 'excel'])
+        ->name('pembayaran-denda.excel');
+    Route::get('/pembayaran-denda/{id}', [PembayaranDendaController::class, 'show'])
+        ->name('pembayaran-denda.show');
+    Route::delete('/pembayaran-denda/{id}', [PembayaranDendaController::class, 'destroy'])
+        ->name('pembayaran-denda.destroy');
+    Route::get('/pembayaran-denda-trash', [PembayaranDendaController::class, 'trashed'])
+        ->name('pembayaran-denda.trashed');
+    Route::put('/pembayaran-denda-restore/{id}', [PembayaranDendaController::class, 'restore'])
+        ->name('pembayaran-denda.restore');
+    Route::delete('/pembayaran-denda-force-delete/{id}', [PembayaranDendaController::class, 'forceDelete'])
+        ->name('pembayaran-denda.forceDelete');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -163,18 +210,24 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/pinjam/{id}', [PinjamController::class, 'destroy'])
         ->name('pinjam.destroy');
     Route::post('/pinjam/{id}/restore', [PinjamController::class, 'restore'])
-    ->name('pinjam.restore');
+        ->name('pinjam.restore');
     Route::delete('/pinjam/{id}/force-delete', [PinjamController::class, 'forceDelete'])
-    ->name('pinjam.forceDelete');
+        ->name('pinjam.forceDelete');
+
+    Route::get('/kontak', function () {return view('kontak.index');})->name('kontak.index');
 });
 
 // ADMIN
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', function () {return "Halaman Admin";});
+    Route::get('/admin', function () {
+        return "Halaman Admin";
+    });
 });
 // ANGGOTA
 Route::middleware(['auth', 'role:anggota'])->group(function () {
-    Route::get('/anggota', function () {return "Halaman Anggota";});
+    Route::get('/anggota', function () {
+        return "Halaman Anggota";
+    });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

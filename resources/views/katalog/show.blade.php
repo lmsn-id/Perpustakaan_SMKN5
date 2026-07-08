@@ -1,43 +1,49 @@
-<x-app-layout>
+@extends('tampilan.app')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Detail Buku
-        </h2>
-    </x-slot>
+@section('title', 'Detail Buku')
 
-    <div class="py-6">
+@section('content')
 
-        <div class="max-w-6xl mx-auto">
+<section class="content">
+    <div class="container-fluid">
 
-            {{-- Alert --}}
-            @if(session('success'))
+        @include('tampilan.alert')
 
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+        <div class="card card-primary card-outline">
 
-                    {{ session('success') }}
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-book mr-2"></i>Detail Buku
+                </h3>
 
+                <div class="card-tools">
+                    <a href="{{ route('katalog.index') }}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
                 </div>
+            </div>
 
-            @endif
+            <div class="card-body">
 
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+                <div class="row">
 
                     {{-- Cover --}}
-                    <div>
+                    <div class="col-md-4 text-center">
 
                         @if($buku->cover)
 
-                            <img src="{{ asset('storage/' . $buku->cover) }}"
-                                 class="w-full rounded-lg shadow object-cover">
+                            <img src="{{ asset('storage/'.$buku->cover) }}"
+                                 class="img-fluid img-thumbnail"
+                                 style="max-height:520px;">
 
                         @else
 
-                            <div class="w-full h-[500px] bg-gray-200 flex items-center justify-center rounded-lg text-gray-500">
+                            <div class="border d-flex align-items-center justify-content-center bg-light"
+                                 style="height:520px;">
 
-                                Tidak Ada Cover
+                                <span class="text-muted">
+                                    Tidak Ada Cover
+                                </span>
 
                             </div>
 
@@ -45,125 +51,186 @@
 
                     </div>
 
-                    {{-- Detail Buku --}}
-                    <div class="md:col-span-2">
+                    {{-- Detail --}}
+                    <div class="col-md-8">
 
-                        <h1 class="text-3xl font-bold text-gray-800">
-
+                        <h2 class="font-weight-bold mb-2">
                             {{ $buku->judul }}
+                        </h2>
 
-                        </h1>
-
-                        <p class="text-lg text-gray-600 mt-2">
-
+                        <h5 class="text-muted mb-4">
                             {{ $buku->pengarang }}
+                        </h5>
 
-                        </p>
+                        <div class="row">
 
-                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="col-md-6">
 
-                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="info-box">
 
-                                <p class="text-sm text-gray-500">
-                                    Kode Buku
-                                </p>
+                                    <span class="info-box-icon bg-primary">
+                                        <i class="fas fa-barcode"></i>
+                                    </span>
 
-                                <p class="font-semibold">
-                                    {{ $buku->kode_buku }}
-                                </p>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            Kode Buku
+                                        </span>
 
-                            </div>
+                                        <span class="info-box-number">
+                                            {{ $buku->kode_buku }}
+                                        </span>
+                                    </div>
 
-                            <div class="bg-gray-50 p-4 rounded-lg">
-
-                                <p class="text-sm text-gray-500">
-                                    Kategori
-                                </p>
-
-                                <p class="font-semibold">
-                                    {{ $buku->kategori->nama_kategori }}
-                                </p>
+                                </div>
 
                             </div>
 
-                            <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="col-md-6">
 
-                                <p class="text-sm text-gray-500">
-                                    Rak
-                                </p>
+                                <div class="info-box">
 
-                                <p class="font-semibold">
-                                    {{ $buku->rak->nama_rak }}
-                                </p>
+                                    <span class="info-box-icon bg-success">
+                                        <i class="fas fa-tags"></i>
+                                    </span>
 
-                            </div>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            Kategori
+                                        </span>
 
-                            <div class="bg-gray-50 p-4 rounded-lg">
+                                        <span class="info-box-number">
+                                            {{ $buku->kategori->nama_kategori }}
+                                        </span>
+                                    </div>
 
-                                <p class="text-sm text-gray-500">
-                                    Tahun Terbit
-                                </p>
-
-                                <p class="font-semibold">
-                                    {{ $buku->tahun_terbit }}
-                                </p>
+                                </div>
 
                             </div>
 
-                            <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="col-md-6">
 
-                                <p class="text-sm text-gray-500">
-                                    Penerbit
-                                </p>
+                                <div class="info-box">
 
-                                <p class="font-semibold">
-                                    {{ $buku->penerbit }}
-                                </p>
+                                    <span class="info-box-icon bg-warning">
+                                        <i class="fas fa-layer-group"></i>
+                                    </span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            Rak Buku
+                                        </span>
+
+                                        <span class="info-box-number">
+                                            {{ $buku->rak->nama_rak }}
+                                        </span>
+                                    </div>
+
+                                </div>
 
                             </div>
 
-                            <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="col-md-6">
 
-                                <p class="text-sm text-gray-500">
-                                    Stok
-                                </p>
+                                <div class="info-box">
 
-                                <p class="font-semibold">
+                                    <span class="info-box-icon bg-info">
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            Tahun Terbit
+                                        </span>
+
+                                        <span class="info-box-number">
+                                            {{ $buku->tahun_terbit }}
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="info-box">
+
+                                    <span class="info-box-icon bg-secondary">
+                                        <i class="fas fa-building"></i>
+                                    </span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">
+                                            Penerbit
+                                        </span>
+
+                                        <span class="info-box-number">
+                                            {{ $buku->penerbit }}
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="info-box">
 
                                     @if($buku->stok > 0)
 
-                                        <span class="text-green-600">
-
-                                            {{ $buku->stok }} tersedia
-
+                                        <span class="info-box-icon bg-success">
+                                            <i class="fas fa-check"></i>
                                         </span>
 
                                     @else
 
-                                        <span class="text-red-600">
-
-                                            Stok Habis
-
+                                        <span class="info-box-icon bg-danger">
+                                            <i class="fas fa-times"></i>
                                         </span>
 
                                     @endif
 
-                                </p>
+                                    <div class="info-box-content">
+
+                                        <span class="info-box-text">
+                                            Stok Buku
+                                        </span>
+
+                                        <span class="info-box-number">
+
+                                            @if($buku->stok > 0)
+
+                                                {{ $buku->stok }} tersedia
+
+                                            @else
+
+                                                Stok Habis
+
+                                            @endif
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
                         </div>
 
                         {{-- Deskripsi --}}
-                        <div class="mt-6">
+                        <div class="card mt-3">
 
-                            <h3 class="text-xl font-bold mb-2">
+                            <div class="card-header bg-light">
+                                <strong>
+                                    <i class="fas fa-book-open mr-2"></i>
+                                    Deskripsi Buku
+                                </strong>
+                            </div>
 
-                                Deskripsi Buku
-
-                            </h3>
-
-                            <div class="bg-gray-50 p-4 rounded-lg leading-relaxed text-gray-700">
+                            <div class="card-body">
 
                                 {{ $buku->deskripsi ?? 'Tidak ada deskripsi buku.' }}
 
@@ -172,33 +239,33 @@
                         </div>
 
                         {{-- Tombol --}}
-                        <div class="mt-6 flex flex-wrap gap-3">
+                        <div class="mt-4">
 
-                            {{-- Kembali --}}
                             <a href="{{ route('katalog.index') }}"
-                               class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg">
+                               class="btn btn-secondary">
 
+                                <i class="fas fa-arrow-left"></i>
                                 Kembali
 
                             </a>
 
-                            {{-- Tombol Pinjam Khusus Anggota --}}
-                            @if(Auth::user()->role == 'anggota')
+                            @if(auth()->user()->role == 'anggota')
 
                                 @if($buku->stok > 0)
 
                                     <a href="{{ route('pinjam.create', $buku->id) }}"
-                                       class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg">
+                                       class="btn btn-success">
 
+                                        <i class="fas fa-book-reader"></i>
                                         Pinjam Buku
 
                                     </a>
 
                                 @else
 
-                                    <button disabled
-                                            class="bg-gray-400 text-white px-5 py-2 rounded-lg cursor-not-allowed">
+                                    <button class="btn btn-danger" disabled>
 
+                                        <i class="fas fa-times-circle"></i>
                                         Stok Habis
 
                                     </button>
@@ -218,5 +285,6 @@
         </div>
 
     </div>
+</section>
 
-</x-app-layout>
+@endsection

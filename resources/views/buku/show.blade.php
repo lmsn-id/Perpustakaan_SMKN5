@@ -1,94 +1,223 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Detail Buku')
 
-    <x-slot name="header">
-        Detail Buku
-    </x-slot>
+@section('content')
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
 
-    <div class="py-6">
+            <div class="card-header">
 
-        <div class="max-w-5xl mx-auto">
+                <h3 class="card-title">
 
-            <div class="bg-white p-6 rounded-lg shadow">
+                    Detail Data Buku
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                </h3>
 
-                    <div>
+                <div class="card-tools">
+
+                    <a href="{{ route('buku.index') }}"
+                        class="btn btn-secondary btn-sm">
+
+                        <i class="fas fa-arrow-left"></i>
+
+                        Kembali
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-3 text-center">
 
                         @if($buku->cover)
 
-                            <img src="{{ asset('storage/' . $buku->cover) }}"
-                                 class="w-full rounded shadow">
+                        <img src="{{ asset('storage/'.$buku->cover) }}"
+                            class="img-thumbnail mb-3"
+                            style="width:220px;">
 
                         @else
 
-                            <div class="bg-gray-200 h-80 flex items-center justify-center rounded">
-
-                                Tidak Ada Cover
-
-                            </div>
+                        <img src="{{ asset('images/no-image.png') }}"
+                            class="img-thumbnail mb-3"
+                            style="width:220px;">
 
                         @endif
 
                     </div>
 
-                    <div class="md:col-span-2 space-y-3">
+                    <div class="col-md-9">
 
-                        <h2 class="text-2xl font-bold">
-                            {{ $buku->judul }}
-                        </h2>
+                        <table class="table table-bordered">
 
-                        <p>
-                            <span class="font-semibold">Kode Buku:</span>
-                            {{ $buku->kode_buku }}
-                        </p>
+                            <tr>
 
-                        <p>
-                            <span class="font-semibold">Pengarang:</span>
-                            {{ $buku->pengarang }}
-                        </p>
+                                <th width="220">
+                                    Kode Buku
+                                </th>
 
-                        <p>
-                            <span class="font-semibold">Penerbit:</span>
-                            {{ $buku->penerbit }}
-                        </p>
+                                <td>
 
-                        <p>
-                            <span class="font-semibold">Tahun Terbit:</span>
-                            {{ $buku->tahun_terbit }}
-                        </p>
+                                    {{ $buku->kode_buku }}
 
-                        <p>
-                            <span class="font-semibold">Kategori:</span>
-                            {{ $buku->kategori->nama_kategori }}
-                        </p>
+                                </td>
 
-                        <p>
-                            <span class="font-semibold">Rak:</span>
-                            {{ $buku->rak->nama_rak }}
-                        </p>
+                            </tr>
 
-                        <div>
+                            <tr>
 
-                            <span class="font-semibold">Deskripsi:</span>
+                                <th>
 
-                            <div class="mt-2 text-gray-700 leading-relaxed">
+                                    Judul Buku
 
-                                {{ $buku->deskripsi }}
+                                </th>
 
-                            </div>
+                                <td>
 
-                        </div>
+                                    <strong>
 
-                        <div class="pt-4">
+                                        {{ $buku->judul }}
 
-                            <a href="{{ route('buku.index') }}"
-                               class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg">
+                                    </strong>
 
-                                Kembali
+                                </td>
 
-                            </a>
+                            </tr>
 
-                        </div>
+                            <tr>
+
+                                <th>
+
+                                    Pengarang
+
+                                </th>
+
+                                <td>
+
+                                    {{ $buku->pengarang }}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Penerbit
+
+                                </th>
+
+                                <td>
+
+                                    {{ $buku->penerbit }}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Tahun Terbit
+
+                                </th>
+
+                                <td>
+
+                                    {{ $buku->tahun_terbit }}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Kategori
+
+                                </th>
+
+                                <td>
+
+                                    {{ $buku->kategori->nama_kategori }}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Rak
+
+                                </th>
+
+                                <td>
+
+                                    {{ $buku->rak->nama_rak }}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Stok
+
+                                </th>
+
+                                <td>
+
+                                    @if($buku->stok > 0)
+
+                                    <span class="badge badge-success">
+
+                                        {{ $buku->stok }} Buku
+
+                                    </span>
+
+                                    @else
+
+                                    <span class="badge badge-danger">
+
+                                        Habis
+
+                                    </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <th>
+
+                                    Deskripsi
+
+                                </th>
+
+                                <td>
+
+                                    {!! nl2br(e($buku->deskripsi)) !!}
+
+                                </td>
+
+                            </tr>
+
+                        </table>
 
                     </div>
 
@@ -96,8 +225,32 @@
 
             </div>
 
+            <div class="card-footer">
+
+                <a href="{{ route('buku.edit',$buku->id) }}"
+                    class="btn btn-warning">
+
+                    <i class="fas fa-edit"></i>
+
+                    Edit
+
+                </a>
+
+                <a href="{{ route('buku.index') }}"
+                    class="btn btn-secondary">
+
+                    <i class="fas fa-arrow-left"></i>
+
+                    Kembali
+
+                </a>
+
+            </div>
+
         </div>
 
     </div>
 
-</x-app-layout>
+</section>
+
+@endsection

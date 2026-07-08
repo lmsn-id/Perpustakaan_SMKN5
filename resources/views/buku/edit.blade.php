@@ -1,207 +1,312 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Edit Buku')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Buku
-        </h2>
-    </x-slot>
+@section('content')
+<section class="content">
 
-    <div class="py-6">
+    <div class="container-fluid">
 
-        <div class="max-w-5xl mx-auto">
+        @include('tampilan.alert')
 
-            <div class="bg-white p-6 rounded-lg shadow">
+        @if ($errors->any())
 
-                {{-- Error --}}
-                @if ($errors->any())
+        <div class="alert alert-danger">
 
-                    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <ul class="mb-0">
 
-                        <ul class="list-disc pl-5">
+                @foreach ($errors->all() as $error)
 
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
+                <li>{{ $error }}</li>
 
-                        </ul>
+                @endforeach
 
-                    </div>
+            </ul>
 
-                @endif
+        </div>
 
-                <form action="{{ route('buku.update', $buku->id) }}"
-                      method="POST"
-                      enctype="multipart/form-data">
+        @endif
 
-                    @csrf
-                    @method('PUT')
+        <div class="card">
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="card-header">
 
-                        {{-- Kategori --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Kategori</label>
+                <h3 class="card-title">
 
-                            <select name="kategori_id"
-                                    class="w-full border rounded-lg p-2">
+                    Edit Data Buku
 
-                                @foreach($kategori as $item)
+                </h3>
+
+                <div class="card-tools">
+
+                    <a href="{{ route('buku.index') }}"
+                        class="btn btn-secondary btn-sm">
+
+                        <i class="fas fa-arrow-left"></i>
+
+                        Kembali
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <form action="{{ route('buku.update',$buku->id) }}"
+                method="POST"
+                enctype="multipart/form-data">
+
+                @csrf
+                @method('PUT')
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <label>Kategori</label>
+
+                                <select name="kategori_id"
+                                    class="form-control">
+
+                                    @foreach($kategori as $item)
 
                                     <option value="{{ $item->id }}"
-                                        {{ $buku->kategori_id == $item->id ? 'selected' : '' }}>
+                                        {{ $buku->kategori_id==$item->id?'selected':'' }}>
 
                                         {{ $item->nama_kategori }}
 
                                     </option>
 
-                                @endforeach
+                                    @endforeach
 
-                            </select>
+                                </select>
+
+                            </div>
+
                         </div>
 
-                        {{-- Rak --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Rak</label>
+                        <div class="col-md-6">
 
-                            <select name="rak_id"
-                                    class="w-full border rounded-lg p-2">
+                            <div class="form-group">
 
-                                @foreach($rak as $item)
+                                <label>Rak</label>
+
+                                <select name="rak_id"
+                                    class="form-control">
+
+                                    @foreach($rak as $item)
 
                                     <option value="{{ $item->id }}"
-                                        {{ $buku->rak_id == $item->id ? 'selected' : '' }}>
+                                        {{ $buku->rak_id==$item->id?'selected':'' }}>
 
                                         {{ $item->nama_rak }}
 
                                     </option>
 
-                                @endforeach
+                                    @endforeach
 
-                            </select>
+                                </select>
+
+                            </div>
+
                         </div>
 
-                        {{-- Kode Buku --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Kode Buku</label>
+                        <div class="col-md-6">
 
-                            <input type="text"
-                                   name="kode_buku"
-                                   value="{{ $buku->kode_buku }}"
-                                   class="w-full border rounded-lg p-2">
+                            <div class="form-group">
+
+                                <label>Kode Buku</label>
+
+                                <input type="text"
+                                    name="kode_buku"
+                                    value="{{ $buku->kode_buku }}"
+                                    class="form-control">
+
+                            </div>
+
                         </div>
 
-                        {{-- Judul --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Judul Buku</label>
+                        <div class="col-md-6">
 
-                            <input type="text"
-                                   name="judul"
-                                   value="{{ $buku->judul }}"
-                                   class="w-full border rounded-lg p-2">
+                            <div class="form-group">
+
+                                <label>Judul Buku</label>
+
+                                <input type="text"
+                                    name="judul"
+                                    value="{{ $buku->judul }}"
+                                    class="form-control">
+
+                            </div>
+
                         </div>
 
-                        {{-- Pengarang --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Pengarang</label>
+                        <div class="col-md-6">
 
-                            <input type="text"
-                                   name="pengarang"
-                                   value="{{ $buku->pengarang }}"
-                                   class="w-full border rounded-lg p-2">
+                            <div class="form-group">
+
+                                <label>Pengarang</label>
+
+                                <input type="text"
+                                    name="pengarang"
+                                    value="{{ $buku->pengarang }}"
+                                    class="form-control">
+
+                            </div>
+
                         </div>
 
-                        {{-- Penerbit --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Penerbit</label>
+                        <div class="col-md-6">
 
-                            <input type="text"
-                                   name="penerbit"
-                                   value="{{ $buku->penerbit }}"
-                                   class="w-full border rounded-lg p-2">
+                            <div class="form-group">
+
+                                <label>Penerbit</label>
+
+                                <input type="text"
+                                    name="penerbit"
+                                    value="{{ $buku->penerbit }}"
+                                    class="form-control">
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <label>Tahun Terbit</label>
+
+                                <input type="number"
+                                    name="tahun_terbit"
+                                    value="{{ $buku->tahun_terbit }}"
+                                    class="form-control">
+
+                            </div>
+
                         </div>
 
-                        {{-- Tahun --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Tahun Terbit</label>
+                        <div class="col-md-6">
 
-                            <input type="number"
-                                   name="tahun_terbit"
-                                   value="{{ $buku->tahun_terbit }}"
-                                   class="w-full border rounded-lg p-2">
+                            <div class="form-group">
+
+                                <label>Stok Buku</label>
+
+                                <input type="number"
+                                    name="stok"
+                                    value="{{ old('stok', $buku->stok) }}"
+                                    min="0"
+                                    class="form-control">
+
+                            </div>
+
                         </div>
 
-                        {{-- Stok (FIXED POSITION & AMAN) --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Stok</label>
+                        <div class="col-md-6">
 
-                            <input type="number"
-                                   name="stok"
-                                   value="{{ old('stok', $buku->stok) }}"
-                                   min="0"
-                                   class="w-full border rounded-lg p-2">
+                            <div class="form-group">
+
+                                <label>Cover Buku</label>
+
+                                <div class="custom-file">
+
+                                    <input type="file"
+                                        name="cover"
+                                        id="cover"
+                                        class="custom-file-input">
+
+                                    <label class="custom-file-label">
+
+                                        Pilih Cover...
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
-                        {{-- Cover --}}
-                        <div>
-                            <label class="block mb-1 font-semibold">Cover Buku</label>
+                        <div class="col-md-6">
 
-                            <input type="file"
-                                   name="cover"
-                                   class="w-full border rounded-lg p-2 bg-white">
+                            @if($buku->cover)
+
+                            <div class="form-group">
+
+                                <label>Cover Saat Ini</label>
+
+                                <br>
+
+                                <img src="{{ asset('storage/'.$buku->cover) }}"
+                                    class="img-thumbnail"
+                                    width="130">
+
+                            </div>
+
+                            @endif
+
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+
+                                <label>Deskripsi</label>
+
+                                <textarea
+                                    name="deskripsi"
+                                    rows="5"
+                                    class="form-control">{{ $buku->deskripsi }}</textarea>
+
+                            </div>
+
                         </div>
 
                     </div>
 
-                    {{-- Preview Cover --}}
-                    @if($buku->cover)
+                </div>
 
-                        <div class="mt-4">
+                <div class="card-footer">
 
-                            <p class="mb-2 font-semibold">Cover Saat Ini:</p>
+                    <button type="submit"
+                        class="btn btn-primary">
 
-                            <img src="{{ asset('storage/' . $buku->cover) }}"
-                                 class="w-40 rounded shadow">
+                        <i class="fas fa-save"></i>
 
-                        </div>
+                        Update
 
-                    @endif
+                    </button>
 
-                    {{-- Deskripsi --}}
-                    <div class="mt-4">
+                    <a href="{{ route('buku.index') }}"
+                        class="btn btn-secondary">
 
-                        <label class="block mb-1 font-semibold">Deskripsi</label>
+                        <i class="fas fa-arrow-left"></i>
 
-                        <textarea name="deskripsi"
-                                  rows="5"
-                                  class="w-full border rounded-lg p-2">{{ $buku->deskripsi }}</textarea>
+                        Kembali
 
-                    </div>
+                    </a>
 
-                    {{-- Button --}}
-                    <div class="mt-6 flex gap-3">
+                </div>
 
-                        <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg">
-
-                            Update
-
-                        </button>
-
-                        <a href="{{ route('buku.index') }}"
-                           class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg">
-
-                            Kembali
-
-                        </a>
-
-                    </div>
-
-                </form>
-
-            </div>
+            </form>
 
         </div>
 
     </div>
 
-</x-app-layout>
+</section>
+@endsection
+
+@section('javascript')
+
+<script>
+    $(function() {
+
+        bsCustomFileInput.init();
+
+    });
+</script>
+
+@endsection

@@ -1,297 +1,205 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Dashboard Admin')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
-            Dashboard Admin
-        </h2>
-    </x-slot>
+@section('content')
+<section class="content">
+  <div class="container-fluid">
+        <div class="row">
 
-    <div class="py-6">
-
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            {{-- CARD STATISTIK --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                {{-- Total Buku --}}
-                <div class="bg-white rounded-2xl shadow p-6 border-l-4 border-blue-500">
-
-                    <div class="flex items-center justify-between">
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Total Buku
-                            </p>
-
-                            <h2 class="text-3xl font-bold text-gray-800 mt-2">
-                                {{ $totalBuku }}
-                            </h2>
-                        </div>
-
-                        <div class="bg-blue-100 p-4 rounded-full">
-                            📚
-                        </div>
-
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h4>Data Buku</h4>
+                        <p>Data buku perpustakaan</p>
                     </div>
-
-                </div>
-
-                {{-- Total Member --}}
-                <div class="bg-white rounded-2xl shadow p-6 border-l-4 border-green-500">
-
-                    <div class="flex items-center justify-between">
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Total Member
-                            </p>
-
-                            <h2 class="text-3xl font-bold text-gray-800 mt-2">
-                                {{ $totalMember }}
-                            </h2>
-                        </div>
-
-                        <div class="bg-green-100 p-4 rounded-full">
-                            👨‍🎓
-                        </div>
-
+                    <div class="icon">
+                        <i class="fas fa-book"></i>
                     </div>
-
+                    <a href="{{ route('buku.index') }}" class="small-box-footer">
+                        Kelola Data Buku <i class="fas fa-arrow-circle-right"></i>
+                    </a>
                 </div>
-
-                {{-- Total Peminjaman --}}
-                <div class="bg-white rounded-2xl shadow p-6 border-l-4 border-yellow-500">
-
-                    <div class="flex items-center justify-between">
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Total Peminjaman
-                            </p>
-
-                            <h2 class="text-3xl font-bold text-gray-800 mt-2">
-                                {{ $totalPinjam }}
-                            </h2>
-                        </div>
-
-                        <div class="bg-yellow-100 p-4 rounded-full">
-                            📖
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {{-- Sedang Dipinjam --}}
-                <div class="bg-white rounded-2xl shadow p-6 border-l-4 border-red-500">
-
-                    <div class="flex items-center justify-between">
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Sedang Dipinjam
-                            </p>
-
-                            <h2 class="text-3xl font-bold text-gray-800 mt-2">
-                                {{ $pinjamAktif }}
-                            </h2>
-                        </div>
-
-                        <div class="bg-red-100 p-4 rounded-full">
-                            ⏳
-                        </div>
-
-                    </div>
-
-                </div>
-
             </div>
 
-            {{-- MENU CEPAT --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-
-                <a href="{{ route('buku.index') }}"
-                   class="bg-white shadow rounded-2xl p-6 hover:bg-blue-50 transition">
-
-                    <div class="text-4xl mb-3">
-                        📚
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h4>Data Member</h4>
+                        <p>Anggota perpustakaan</p>
                     </div>
-
-                    <h3 class="text-lg font-bold text-gray-800">
-                        Data Buku
-                    </h3>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        Kelola data buku perpustakaan
-                    </p>
-
-                </a>
-
-                <a href="{{ route('member.index') }}"
-                   class="bg-white shadow rounded-2xl p-6 hover:bg-green-50 transition">
-
-                    <div class="text-4xl mb-3">
-                        👨‍🎓
+                    <div class="icon">
+                        <i class="fas fa-user-graduate"></i>
                     </div>
-
-                    <h3 class="text-lg font-bold text-gray-800">
-                        Data Member
-                    </h3>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        Kelola data anggota perpustakaan
-                    </p>
-
-                </a>
-
-                <a href="{{ route('pinjam.index') }}"
-                   class="bg-white shadow rounded-2xl p-6 hover:bg-yellow-50 transition">
-
-                    <div class="text-4xl mb-3">
-                        📖
-                    </div>
-
-                    <h3 class="text-lg font-bold text-gray-800">
-                        Data Peminjaman
-                    </h3>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        Kelola transaksi peminjaman
-                    </p>
-
-                </a>
-
-                <a href="{{ route('kategori.index') }}"
-                   class="bg-white shadow rounded-2xl p-6 hover:bg-purple-50 transition">
-
-                    <div class="text-4xl mb-3">
-                        🗂️
-                    </div>
-
-                    <h3 class="text-lg font-bold text-gray-800">
-                        Kategori Buku
-                    </h3>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        Kelola kategori buku
-                    </p>
-
-                </a>
-
+                    <a href="{{ route('member.index') }}" class="small-box-footer">
+                        Kelola Data Anggota <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
             </div>
 
-            {{-- PEMINJAMAN TERBARU --}}
-            <div class="bg-white shadow rounded-2xl mt-8 overflow-hidden">
-
-                <div class="p-6 border-b">
-
-                    <h2 class="text-xl font-bold text-gray-800">
-                        Peminjaman Terbaru
-                    </h2>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        Daftar transaksi terbaru perpustakaan
-                    </p>
-
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h4>Data Peminjaman</h4>
+                        <p>Transaksi peminjaman</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <a href="{{ route('pinjam.index') }}" class="small-box-footer">
+                        Kelola Data Peminjaman <i class="fas fa-arrow-circle-right"></i>
+                    </a>
                 </div>
+            </div>
 
-                <div class="overflow-x-auto">
-
-                    <table class="min-w-full divide-y divide-gray-200">
-
-                        <thead class="bg-gray-50">
-
-                            <tr>
-
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Member
-                                </th>
-
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Buku
-                                </th>
-
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
-                                    Jumlah
-                                </th>
-
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody class="divide-y divide-gray-200 bg-white">
-
-                            @forelse($pinjamTerbaru as $item)
-
-                                <tr class="hover:bg-gray-50">
-
-                                    <td class="px-6 py-4">
-                                        {{ $item->user->name }}
-                                    </td>
-
-                                    <td class="px-6 py-4">
-                                        {{ $item->buku->judul }}
-                                    </td>
-
-                                    <td class="px-6 py-4 text-center">
-                                        {{ $item->jumlah }}
-                                    </td>
-
-                                    <td class="px-6 py-4 text-center">
-
-                                        @if($item->status == 'pending')
-
-                                            <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">
-                                                Pending
-                                            </span>
-
-                                        @elseif($item->status == 'dipinjam')
-
-                                            <span class="px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-700">
-                                                Dipinjam
-                                            </span>
-
-                                        @else
-
-                                            <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
-                                                Dikembalikan
-                                            </span>
-
-                                        @endif
-
-                                    </td>
-
-                                </tr>
-
-                            @empty
-
-                                <tr>
-
-                                    <td colspan="4"
-                                        class="px-6 py-10 text-center text-gray-500">
-
-                                        Belum ada transaksi peminjaman
-
-                                    </td>
-
-                                </tr>
-
-                            @endforelse
-
-                        </tbody>
-
-                    </table>
-
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h4>Kategori Buku</h4>
+                        <p>Kategori buku</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <a href="{{ route('kategori.index') }}" class="small-box-footer">
+                        Kelola Data Kategori <i class="fas fa-arrow-circle-right"></i>
+                    </a>
                 </div>
-
             </div>
 
         </div>
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
-    </div>
+              <div class="info-box-content">
+                <span class="info-box-text">Total Buku</span>
+                <span class="info-box-number">
+                  {{ $totalBuku }}
+                  <small></small>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
 
-</x-app-layout>
+              <div class="info-box-content">
+                <span class="info-box-text">Sedang Dipinjam</span>
+                <span class="info-box-number">{{ $pinjamAktif }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <!-- fix for small devices only -->
+          <div class="clearfix hidden-md-up"></div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Peminjaman</span>
+                <span class="info-box-number">{{ $totalPinjam }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Member</span>
+                <span class="info-box-number">{{ $totalMember }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+        </div>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Tabel Data Seluruh Peminjaman</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Buku</th>
+                    <th>Jumlah(s)</th>
+                    <th>Status</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($pinjamTerbaru as $item)
+                        <tr>
+                            <td>{{ $item->user->name }}</td>
+                            <td>{{ $item->buku->judul }}</td>
+                            <td>{{ $item->jumlah }}</td>
+                            <td>
+                            @if($item->status == 'pending')
+                                <span class="badge rounded-pill bg-warning text-dark">
+                                    Pending
+                                </span>
+                            @elseif($item->status == 'dipinjam')
+                                <span class="badge rounded-pill bg-primary">
+                                    Dipinjam
+                                </span>
+                            @else
+                                <span class="badge rounded-pill bg-success">
+                                    Dikembalikan
+                                </span>
+                            @endif
+                            </td>
+                        </tr>
+                        </div>
+                    @endforeach
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>Member</th>
+                    <th>Buku</th>
+                    <th>Jumlah(s)</th>
+                    <th>Status</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+  </div>
+</section>
+@endsection
+
+@section('javascript')
+        <script>
+          $(function () {
+            $("#example1").DataTable({
+              "responsive": true, "lengthChange": false, "autoWidth": false,
+              "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+              "paging": true,
+              "lengthChange": false,
+              "searching": false,
+              "ordering": true,
+              "info": true,
+              "autoWidth": false,
+              "responsive": true,
+            });
+          });
+        </script>
+@endsection

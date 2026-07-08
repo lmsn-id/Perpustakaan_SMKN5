@@ -1,149 +1,113 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Master Kelas')
 
-    <x-slot name="header">
-        Master Kelas
-    </x-slot>
-
-    <div class="py-6">
-
-        <div class="max-w-7xl mx-auto">
-
-            @if(session('success'))
-
-                <div class="bg-green-200 text-green-800 p-3 rounded mb-4">
-                    {{ session('success') }}
+@section('content')
+<section class="content">
+    <div class="container-fluid">
+        @include('tampilan.alert')
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    Tabel Data Seluruh Kelas
+                </h3>
+                <div class="card-tools">
+                    <a href="{{ route('kelas.create') }}"
+                        class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i>
+                        Tambah Kelas
+                    </a>
+                    <a href="{{ route('kelas.trash') }}"
+                        class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                        Trash
+                    </a>
                 </div>
-
-            @endif
-
-            <div class="bg-white p-6 rounded shadow">
-
-                <div class="flex justify-between items-center mb-4">
-
-                    <h2 class="text-xl font-bold">
-                        Data Kelas
-                    </h2>
-
-                    <div class="flex gap-2">
-
-                        <a href="{{ route('kelas.trash') }}"
-                           class="bg-gray-700 text-white px-4 py-2 rounded">
-
-                            Trash
-
-                        </a>
-
-                        <a href="{{ route('kelas.create') }}"
-                           class="bg-blue-500 text-white px-4 py-2 rounded">
-
-                            + Tambah
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <table class="w-full border">
-
-                    <thead class="bg-gray-100">
-
+            </div>
+            <div class="card-body">
+                <table id="example1"
+                    class="table table-bordered table-striped">
+                    <thead>
                         <tr>
-
-                            <th class="border p-3">No</th>
-                            <th class="border p-3">Jurusan</th>
-                            <th class="border p-3">Nama Kelas</th>
-                            <th class="border p-3">Aksi</th>
-
+                            <th width="70">No</th>
+                            <th>Jurusan</th>
+                            <th>Nama Kelas</th>
+                            <th width="220">Aksi</th>
                         </tr>
-
                     </thead>
-
                     <tbody>
-
                         @forelse($kelas as $item)
-
                         <tr>
-
-                            <td class="border p-3">
+                            <td class="text-center">
                                 {{ $loop->iteration }}
                             </td>
-
-                            <td class="border p-3">
-                                {{ $item->jurusan->nama_jurusan }}
+                            <td>
+                                {{ $item->jurusan->nama_jurusan ?? '-' }}
                             </td>
-
-                            <td class="border p-3">
+                            <td>
                                 {{ $item->nama_kelas }}
                             </td>
-
-                            <td class="border p-3">
-
-                                <div class="flex gap-2">
-
-                                    <a href="{{ route('kelas.show', $item->id) }}"
-                                       class="w-20 text-center bg-green-500 text-white px-3 py-2 rounded">
-
-                                        Detail
-
-                                    </a>
-
-                                    <a href="{{ route('kelas.edit', $item->id) }}"
-                                       class="w-20 text-center bg-yellow-500 text-white px-3 py-2 rounded">
-
-                                        Edit
-
-                                    </a>
-
-                                    <form action="{{ route('kelas.destroy', $item->id) }}"
-                                          method="POST">
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="submit"
-                                                onclick="return confirm('Hapus data?')"
-                                                class="w-20 bg-red-500 text-white px-3 py-2 rounded">
-
-                                            Hapus
-
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
+                            <td class="text-center">
+                                <a href="{{ route('kelas.show',$item->id) }}"
+                                    class="btn btn-info btn-sm">
+                                    Detail
+                                </a>
+                                <a href="{{ route('kelas.edit',$item->id) }}"
+                                    class="btn btn-warning btn-sm">
+                                    Edit
+                                </a>
+                                <form action="{{ route('kelas.destroy',$item->id) }}"
+                                    method="POST"
+                                    style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                        Hapus
+                                    </button>
+                                </form>
                             </td>
-
                         </tr>
-
                         @empty
-
                         <tr>
-
                             <td colspan="4"
-                                class="text-center p-4">
-
-                                Data kosong
-
+                                class="text-center">
+                                Data Kelas Masih Kosong
                             </td>
-
                         </tr>
-
                         @endforelse
-
                     </tbody>
-
+                    <tfoot>
+                        <tr>
+                            <th>No</th>
+                            <th>Jurusan</th>
+                            <th>Nama Kelas</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </tfoot>
                 </table>
-
-                <div class="mt-4">
-                    {{ $kelas->links() }}
-                </div>
-
             </div>
-
         </div>
-
     </div>
+</section>
+@endsection
 
-</x-app-layout>
+@section('javascript')
+<script>
+    $(function() {
+        $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            buttons: [
+                "copy",
+                "csv",
+                "excel",
+                "pdf",
+                "print",
+                "colvis"
+            ]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+</script>
+@endsection

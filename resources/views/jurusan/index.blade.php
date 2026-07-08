@@ -1,52 +1,62 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Master Jurusan')
 
-    <x-slot name="header">
-        Master Jurusan
-    </x-slot>
+@section('content')
 
-    <div class="py-6">
+<section class="content">
 
-        <div class="max-w-7xl mx-auto">
+    <div class="container-fluid">
 
-            @if(session('success'))
-                <div class="bg-green-200 text-green-800 p-3 rounded mb-4">
-                    {{ session('success') }}
+        @include('tampilan.alert')
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+
+                    Tabel Data Seluruh Jurusan
+
+                </h3>
+
+                <div class="card-tools">
+
+                    <a href="{{ route('jurusan.create') }}"
+                        class="btn btn-primary btn-sm">
+
+                        <i class="fas fa-plus"></i>
+
+                        Tambah Jurusan
+
+                    </a>
+
+                    <a href="{{ route('jurusan.trash') }}"
+                        class="btn btn-danger btn-sm">
+
+                        <i class="fas fa-trash"></i>
+
+                        Trash
+
+                    </a>
+
                 </div>
-            @endif
 
-            <div class="bg-white p-6 rounded shadow">
+            </div>
 
-                <div class="flex justify-between items-center mb-4">
+            <div class="card-body">
 
-                    <h2 class="text-xl font-bold">
-                        Data Jurusan
-                    </h2>
+                <table id="example1"
+                    class="table table-bordered table-striped">
 
-                    <div class="flex gap-2">
-
-                        <a href="{{ route('jurusan.trash') }}"
-                           class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">
-                            Trash
-                        </a>
-
-                        <a href="{{ route('jurusan.create') }}"
-                           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                            + Tambah
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <table class="w-full border">
-
-                    <thead class="bg-gray-100">
+                    <thead>
 
                         <tr>
 
-                            <th class="border p-3">No</th>
-                            <th class="border p-3">Nama Jurusan</th>
-                            <th class="border p-3">Aksi</th>
+                            <th width="70">No</th>
+
+                            <th>Nama Jurusan</th>
+
+                            <th width="220">Aksi</th>
 
                         </tr>
 
@@ -58,45 +68,50 @@
 
                         <tr>
 
-                            <td class="border p-3">
+                            <td class="text-center">
+
                                 {{ $loop->iteration }}
+
                             </td>
 
-                            <td class="border p-3">
+                            <td>
+
                                 {{ $item->nama_jurusan }}
+
                             </td>
 
-                            <td class="border p-3">
+                            <td class="text-center">
 
-                                <div class="flex gap-2">
+                                <a href="{{ route('jurusan.show',$item->id) }}"
+                                    class="btn btn-info btn-sm">
 
-                                    <a href="{{ route('jurusan.show', $item->id) }}"
-                                       class="w-20 text-center bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded">
-                                        Detail
-                                    </a>
+                                    Detail
 
-                                    <a href="{{ route('jurusan.edit', $item->id) }}"
-                                       class="w-20 text-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">
-                                        Edit
-                                    </a>
+                                </a>
 
-                                    <form action="{{ route('jurusan.destroy', $item->id) }}"
-                                          method="POST">
+                                <a href="{{ route('jurusan.edit',$item->id) }}"
+                                    class="btn btn-warning btn-sm">
 
-                                        @csrf
-                                        @method('DELETE')
+                                    Edit
 
-                                        <button type="submit"
-                                                onclick="return confirm('Hapus data?')"
-                                                class="w-20 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded">
+                                </a>
 
-                                            Hapus
+                                <form action="{{ route('jurusan.destroy',$item->id) }}"
+                                    method="POST"
+                                    style="display:inline-block;">
 
-                                        </button>
+                                    @csrf
+                                    @method('DELETE')
 
-                                    </form>
+                                    <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
 
-                                </div>
+                                        Hapus
+
+                                    </button>
+
+                                </form>
 
                             </td>
 
@@ -105,20 +120,35 @@
                         @empty
 
                         <tr>
-                            <td colspan="3" class="text-center p-4">
-                                Data kosong
+
+                            <td colspan="3"
+                                class="text-center">
+
+                                Data Jurusan Masih Kosong
+
                             </td>
+
                         </tr>
 
                         @endforelse
 
                     </tbody>
 
-                </table>
+                    <tfoot>
 
-                <div class="mt-4">
-                    {{ $jurusan->links() }}
-                </div>
+                        <tr>
+
+                            <th>No</th>
+
+                            <th>Nama Jurusan</th>
+
+                            <th>Aksi</th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
 
             </div>
 
@@ -126,4 +156,26 @@
 
     </div>
 
-</x-app-layout>
+</section>
+
+@endsection
+
+@section('javascript')
+<script>
+    $(function() {
+        $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            buttons: [
+                "copy",
+                "csv",
+                "excel",
+                "pdf",
+                "print",
+                "colvis"
+            ]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+</script>
+@endsection

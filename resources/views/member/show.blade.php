@@ -1,158 +1,58 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Detail Member')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Detail Member
-        </h2>
-    </x-slot>
-
-    <div class="py-8">
-
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-2xl">
-
-                {{-- HEADER --}}
-                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-10">
-
-                    <div class="flex items-center gap-6">
-
-                        {{-- FOTO / ICON --}}
-                        <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg">
-
-                            <span class="text-4xl font-bold text-blue-600">
-                                {{ strtoupper(substr($member->name, 0, 1)) }}
-                            </span>
-
-                        </div>
-
-                        {{-- INFO --}}
-                        <div class="text-white">
-
-                            <h1 class="text-3xl font-bold">
-                                {{ $member->name }}
-                            </h1>
-
-                            <p class="mt-1 text-blue-100">
-                                ID Register :
-                                <span class="font-semibold">
-                                    {{ $member->id_register }}
-                                </span>
-                            </p>
-
-                            <div class="mt-3">
-
-                                <span class="px-4 py-1 bg-white/20 rounded-full text-sm">
-                                    Member Perpustakaan
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
+@section('content')
+<section class="content">
+  <div class="container-fluid">
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  <img class="profile-user-img img-fluid img-circle"
+                       src="{{ asset('adminLTE') }}/dist/img/user4-128x128.jpg"
+                       alt="User profile picture">
                 </div>
+                <h3 class="profile-username text-center">{{ $member->name }}</h3>
+                <p class="text-muted text-center">{{ $member->id_register }} ({{ ucfirst($member->role) }})</p>
+                <ul class="list-group list-group-unbordered mb-3">
+                  <li class="list-group-item">
+                    <b>Email</b> <a class="float-right">{{ $member->email }}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Kelas</b> <a class="float-right">{{ $member->kelas->nama_kelas }}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Nomor WhatsApp</b> <a class="float-right">{{ $member->no_wa }}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Alamat</b> <a class="float-right">{{ $member->alamat }}</a>
+                  </li>
+                </ul>
 
-                {{-- CONTENT --}}
-                <div class="p-8">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                        {{-- EMAIL --}}
-                        <div class="bg-gray-50 rounded-xl p-5 border">
-
-                            <p class="text-sm text-gray-500">
-                                Email
-                            </p>
-
-                            <h3 class="mt-1 text-lg font-semibold text-gray-800">
-                                {{ $member->email }}
-                            </h3>
-
-                        </div>
-
-                        {{-- KELAS --}}
-                        <div class="bg-gray-50 rounded-xl p-5 border">
-
-                            <p class="text-sm text-gray-500">
-                                Kelas
-                            </p>
-
-                            <h3 class="mt-1 text-lg font-semibold text-gray-800">
-                                {{ $member->kelas->nama_kelas ?? '-' }}
-                            </h3>
-
-                        </div>
-
-                        {{-- NO WA --}}
-                        <div class="bg-gray-50 rounded-xl p-5 border">
-
-                            <p class="text-sm text-gray-500">
-                                Nomor WhatsApp
-                            </p>
-
-                            <h3 class="mt-1 text-lg font-semibold text-gray-800">
-                                {{ $member->no_wa ?? '-' }}
-                            </h3>
-
-                        </div>
-
-                        {{-- ROLE --}}
-                        <div class="bg-gray-50 rounded-xl p-5 border">
-
-                            <p class="text-sm text-gray-500">
-                                Role
-                            </p>
-
-                            <h3 class="mt-1">
-                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-                                    {{ ucfirst($member->role) }}
-                                </span>
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-                    {{-- ALAMAT --}}
-                    <div class="mt-6 bg-gray-50 rounded-xl p-5 border">
-
-                        <p class="text-sm text-gray-500">
-                            Alamat
-                        </p>
-
-                        <p class="mt-2 text-gray-800 leading-relaxed">
-                            {{ $member->alamat ?? '-' }}
-                        </p>
-
-                    </div>
-
-                    {{-- BUTTON --}}
-                    <div class="mt-8 flex flex-wrap gap-3">
-
-                        <a href="{{ route('member.index') }}"
-                           class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl shadow transition">
-
-                            Kembali
-
-                        </a>
-
-                        <a href="{{ route('member.edit', $member->id) }}"
-                           class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl shadow transition">
-
-                            Edit Member
-
-                        </a>
-
-                    </div>
-
-                </div>
-
+                <a href="/member" class="btn btn-primary btn-block"><b>Kembali</b></a>
+              </div>
+              <!-- /.card-body -->
             </div>
+            <!-- /.card -->
+  </div>
+</section>
+@endsection
 
-        </div>
-
-    </div>
-
-</x-app-layout>
+@section('javascript')
+        <script>
+          $(function () {
+            $("#example1").DataTable({
+              "responsive": true, "lengthChange": false, "autoWidth": false,
+              "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+              "paging": true,
+              "lengthChange": false,
+              "searching": false,
+              "ordering": true,
+              "info": true,
+              "autoWidth": false,
+              "responsive": true,
+            });
+          });
+        </script>
+@endsection

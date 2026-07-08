@@ -1,40 +1,91 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Edit Jurusan')
 
-    <x-slot name="header">
-        Edit Jurusan
-    </x-slot>
+@section('content')
 
-    <div class="py-6">
+<section class="content">
 
-        <div class="max-w-4xl mx-auto">
+    <div class="container-fluid">
 
-            <div class="bg-white p-6 rounded shadow">
+        @include('tampilan.alert')
 
-                <form action="{{ route('jurusan.update', $jurusan->id) }}"
-                      method="POST">
+        <div class="row justify-content-center">
 
-                    @csrf
-                    @method('PUT')
+            <div class="col-md-12">
 
-                    <div class="mb-4">
+                <div class="card card-warning">
 
-                        <label>Nama Jurusan</label>
+                    <div class="card-header">
 
-                        <input type="text"
-                               name="nama_jurusan"
-                               value="{{ $jurusan->nama_jurusan }}"
-                               class="w-full border rounded p-2">
+                        <h3 class="card-title">
+
+                            Form Edit Jurusan
+
+                        </h3>
 
                     </div>
 
-                    <button type="submit"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+                    <form action="{{ route('jurusan.update', $jurusan->id) }}"
+                        method="POST">
 
-                        Update
+                        @csrf
+                        @method('PUT')
 
-                    </button>
+                        <div class="card-body">
 
-                </form>
+                            <div class="form-group">
+
+                                <label>
+
+                                    Nama Jurusan
+
+                                </label>
+
+                                <input type="text"
+                                    name="nama_jurusan"
+                                    class="form-control @error('nama_jurusan') is-invalid @enderror"
+                                    value="{{ old('nama_jurusan', $jurusan->nama_jurusan) }}"
+                                    placeholder="Masukkan Nama Jurusan">
+
+                                @error('nama_jurusan')
+
+                                <div class="invalid-feedback">
+
+                                    {{ $message }}
+
+                                </div>
+
+                                @enderror
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer">
+
+                            <button type="submit"
+                                class="btn btn-warning">
+
+                                <i class="fas fa-save"></i>
+
+                                Update
+
+                            </button>
+
+                            <a href="{{ route('jurusan.index') }}"
+                                class="btn btn-secondary">
+
+                                <i class="fas fa-arrow-left"></i>
+
+                                Kembali
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
 
             </div>
 
@@ -42,4 +93,6 @@
 
     </div>
 
-</x-app-layout>
+</section>
+
+@endsection

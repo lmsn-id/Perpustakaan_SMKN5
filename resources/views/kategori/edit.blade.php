@@ -1,45 +1,59 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Edit Kategori')
 
-    <x-slot name="header">
-        Edit Kategori
-    </x-slot>
-
-    <div class="py-6">
-
-        <div class="max-w-4xl mx-auto">
-
-            <div class="bg-white p-6 rounded shadow">
-
-                <form action="{{ route('kategori.update', $kategori->id) }}"
-                      method="POST">
-
-                    @csrf
-                    @method('PUT')
-
-                    <div class="mb-4">
-
-                        <label>Nama Kategori</label>
-
-                        <input type="text"
-                               name="nama_kategori"
-                               value="{{ $kategori->nama_kategori }}"
-                               class="w-full border rounded p-2">
-
-                    </div>
-
-                    <button type="submit"
-                            class="bg-yellow-500 text-white px-4 py-2 rounded">
-
-                        Update
-
-                    </button>
-
-                </form>
-
+@section('content')
+<section class="content">
+    <div class="container-fluid">
+        @include('tampilan.alert')
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    Edit Kategori
+                </h3>
+                <div class="card-tools">
+                    <a href="{{ route('kategori.index') }}"
+                        class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                        Kembali
+                    </a>
+                </div>
             </div>
-
+            <form action="{{ route('kategori.update', $kategori->id) }}"
+                method="POST">
+                @csrf
+                @method('PUT')
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Nama Kategori <span class="text-danger">*</span></label>
+                        <input type="text"
+                            name="nama_kategori"
+                            class="form-control @error('nama_kategori') is-invalid @enderror"
+                            value="{{ old('nama_kategori', $kategori->nama_kategori) }}"
+                            placeholder="Masukkan Nama Kategori">
+                        @error('nama_kategori')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit"
+                        class="btn btn-warning">
+                        <i class="fas fa-save"></i>
+                        Update
+                    </button>
+                    <button type="reset"
+                        class="btn btn-secondary">
+                        <i class="fas fa-sync"></i>
+                        Reset
+                    </button>
+                    <a href="{{ route('kategori.index') }}"
+                        class="btn btn-danger">
+                        <i class="fas fa-times"></i>
+                        Batal
+                    </a>
+                </div>
+            </form>
         </div>
-
     </div>
-
-</x-app-layout>
+</section>
+@endsection

@@ -12,30 +12,37 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pinjams', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
 
-            $table->id();
+        $table->engine = 'InnoDB';
+        $table->id();
+        $table->unsignedBigInteger('user_id');
+        $table->unsignedBigInteger('buku_id');
+        $table->unsignedInteger('jumlah')->default(1);
+        $table->date('tanggal_pinjam');
+        $table->unsignedInteger('durasi_pinjam')->default(7);
+        $table->date('tanggal_kembali');
+        $table->date('tanggal_dikembalikan')->nullable();
+        $table->decimal('denda', 12, 2)->default(0);
+        $table->enum('status', [
+            'pending',
+            'dipinjam',
+            'dikembalikan',
+            'dibatalkan'
+        ])->default('pending');
 
-            $table->unsignedBigInteger('user_id');
+        $table->timestamps();
+        $table->softDeletes();
+        $table->foreign('user_id')
+            ->references('id')
+            ->on('users')
+            ->onDelete('cascade');
 
-            $table->unsignedBigInteger('buku_id');
+        $table->foreign('buku_id')
+            ->references('id')
+            ->on('buku')
+            ->onDelete('cascade');
 
-            $table->date('tanggal_pinjam');
-
-            $table->integer('durasi_pinjam');
-
-            $table->date('tanggal_kembali');
-
-            $table->enum('status', [
-                'pending',
-                'dipinjam',
-                'dikembalikan', 'dibatalkan'
-            ])->default('pending');
-
-            $table->timestamps();
-
-            $table->softDeletes();
-        });
+    });
     }
 
     /**

@@ -3,106 +3,104 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Pinjam;
 use App\Models\User;
-
 use Barryvdh\DomPDF\Facade\Pdf;
-
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanPeminjamanExport;
 
 class LaporanPeminjamanController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Filter yang digunakan oleh halaman,
+     * PDF dan Excel.
+     */
+    private function filter(Request $request)
     {
         $query = Pinjam::with(['user', 'buku']);
 
-        // SEARCH
-        if ($request->search) {
+        // ==========================
+        // SEARCH MEMBER
+        // ==========================
+        if ($request->filled('search')) {
 
-            $query->whereHas('user', function ($q) use ($request) {
+            $search = $request->search;
 
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('id_register', 'like', '%' . $request->search . '%');
+            $query->whereHas('user', function ($q) use ($search) {
+
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('id_register', 'like', "%{$search}%");
 
             });
+
         }
 
-        // FILTER STATUS
-        if ($request->status) {
+        // ==========================
+        // STATUS
+        // ==========================
+        if ($request->filled('status')) {
 
             $query->where('status', $request->status);
 
         }
 
-        // FILTER TANGGAL
-        if ($request->tanggal_awal && $request->tanggal_akhir) {
+        // ==========================
+        // TANGGAL AWAL
+        // ==========================
+        if ($request->filled('tanggal_awal')) {
 
-            $query->whereBetween('tanggal_pinjam', [
-                $request->tanggal_awal,
+            $query->whereDate(
+                'tanggal_pinjam',
+                '>=',
+                $request->tanggal_awal
+            );
+
+        }
+
+        // ==========================
+        // TANGGAL AKHIR
+        // ==========================
+        if ($request->filled('tanggal_akhir')) {
+
+            $query->whereDate(
+                'tanggal_pinjam',
+                '<=',
                 $request->tanggal_akhir
-            ]);
-        }
-
-        // FILTER MEMBER
-        if ($request->member_id) {
-
-            $query->where('user_id', $request->member_id);
+            );
 
         }
 
-        $laporan = $query->latest()->paginate(10);
+        return $query;
+    }
 
-        $member = User::where('role', 'anggota')->get();
+    public function index(Request $request)
+    {
+        $laporan = $this->filter($request)
+                ->latest()
+                ->get();
 
-        return view('laporan.peminjaman.index', compact(
-            'laporan',
-            'member'
-        ));
+        return view('laporan.peminjaman.index', compact('laporan'));
     }
 
     public function pdf(Request $request)
     {
-        $query = Pinjam::with(['user', 'buku']);
+        $laporan = $this->filter($request)
+                        ->latest()
+                        ->get();
 
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->tanggal_awal && $request->tanggal_akhir) {
-
-            $query->whereBetween('tanggal_pinjam', [
-                $request->tanggal_awal,
-                $request->tanggal_akhir
-            ]);
-        }
-
-        $laporan = $query->latest()->get();
-
-        $pdf = Pdf::loadView('laporan.peminjaman.pdf', compact('laporan'))
-            ->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView(
+            'laporan.peminjaman.pdf',
+            compact('laporan')
+        )->setPaper('a4', 'landscape');
 
         return $pdf->stream('laporan-peminjaman.pdf');
     }
 
     public function excel(Request $request)
     {
-        $query = Pinjam::with(['user', 'buku']);
-
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->tanggal_awal && $request->tanggal_akhir) {
-
-            $query->whereBetween('tanggal_pinjam', [
-                $request->tanggal_awal,
-                $request->tanggal_akhir
-            ]);
-        }
-
-        $data = $query->latest()->get();
+        $data = $this->filter($request)
+                     ->latest()
+                     ->get();
 
         return Excel::download(
             new LaporanPeminjamanExport($data),

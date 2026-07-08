@@ -1,95 +1,84 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Laporan Peminjaman')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Laporan Peminjaman
-        </h2>
-    </x-slot>
+@section('content')
+<section class="content">
+    <div class="container-fluid">
 
-    <div class="py-6">
+        @include('tampilan.alert')
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="card">
 
-            <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="card-header">
 
-                {{-- HEADER --}}
-                <div class="p-6 border-b flex justify-between items-center">
+                <h3 class="card-title">
+                    Laporan Peminjaman Buku
+                </h3>
 
-                    <div>
-                        <h2 class="text-2xl font-bold">
-                            Laporan Peminjaman
-                        </h2>
+                <div class="card-tools">
 
-                        <p class="text-sm text-gray-500">
-                            Data laporan peminjaman buku
-                        </p>
-                    </div>
+                    <a href="{{ route('laporan.peminjaman.pdf', request()->all()) }}"
+                        target="_blank"
+                        class="btn btn-danger btn-sm">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
 
-                    <div class="flex gap-2">
-
-                        <a href="{{ route('laporan.peminjaman.pdf', request()->all()) }}"
-                           target="_blank"
-                           class="px-4 py-2 bg-red-500 text-white rounded-lg">
-                            PDF
-                        </a>
-
-                        <a href="{{ route('laporan.peminjaman.excel', request()->all()) }}"
-                           class="px-4 py-2 bg-green-500 text-white rounded-lg">
-                            Excel
-                        </a>
-
-                    </div>
+                    <a href="{{ route('laporan.peminjaman.excel', request()->all()) }}"
+                        class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </a>
 
                 </div>
 
-                {{-- FILTER --}}
-                <div class="p-6 border-b">
+            </div>
 
-                    <form method="GET">
+            <div class="card-body">
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form method="GET">
 
-                            {{-- SEARCH --}}
-                            <div>
+                    <div class="row">
 
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Cari Member
-                                </label>
+                        <div class="col-md-3">
 
-                                <input type="text"
+                            <div class="form-group">
+
+                                <label>Nama / ID Member</label>
+
+                                <input
+                                    type="text"
                                     name="search"
                                     value="{{ request('search') }}"
-                                    placeholder="Nama / ID Register"
-                                    class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-200">
+                                    class="form-control"
+                                    placeholder="Nama atau ID Member">
 
                             </div>
 
-                            {{-- STATUS --}}
-                            <div>
+                        </div>
 
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Status
-                                </label>
+                        <div class="col-md-3">
 
-                                <select name="status"
-                                        class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-200">
+                            <div class="form-group">
 
-                                    <option value="">
-                                        Semua Status
-                                    </option>
+                                <label>Status</label>
+
+                                <select
+                                    name="status"
+                                    class="form-control">
+
+                                    <option value="">Semua Status</option>
 
                                     <option value="pending"
-                                        {{ request('status') == 'pending' ? 'selected' : '' }}>
+                                        {{ request('status')=='pending'?'selected':'' }}>
                                         Pending
                                     </option>
 
                                     <option value="dipinjam"
-                                        {{ request('status') == 'dipinjam' ? 'selected' : '' }}>
+                                        {{ request('status')=='dipinjam'?'selected':'' }}>
                                         Dipinjam
                                     </option>
 
                                     <option value="dikembalikan"
-                                        {{ request('status') == 'dikembalikan' ? 'selected' : '' }}>
+                                        {{ request('status')=='dikembalikan'?'selected':'' }}>
                                         Dikembalikan
                                     </option>
 
@@ -97,169 +86,178 @@
 
                             </div>
 
-                            {{-- TANGGAL AWAL --}}
-                            <div>
+                        </div>
 
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Tanggal Awal
-                                </label>
+                        <div class="col-md-3">
 
-                                <input type="date"
+                            <div class="form-group">
+
+                                <label>Tanggal Awal</label>
+
+                                <input
+                                    type="date"
                                     name="tanggal_awal"
                                     value="{{ request('tanggal_awal') }}"
-                                    class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-200">
+                                    class="form-control">
 
                             </div>
 
-                            {{-- TANGGAL AKHIR --}}
-                            <div>
+                        </div>
 
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Tanggal Akhir
-                                </label>
+                        <div class="col-md-3">
 
-                                <input type="date"
+                            <div class="form-group">
+
+                                <label>Tanggal Akhir</label>
+
+                                <input
+                                    type="date"
                                     name="tanggal_akhir"
                                     value="{{ request('tanggal_akhir') }}"
-                                    class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-200">
+                                    class="form-control">
 
                             </div>
 
                         </div>
 
-                        {{-- BUTTON --}}
-                        <div class="mt-6 flex flex-wrap items-center gap-4">
+                    </div>
 
-                            <button type="submit"
-                                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition shadow-sm">
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
 
-                                Search
+                    <a href="{{ route('laporan.peminjaman') }}"
+                        class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sync"></i> Reset
+                    </a>
 
-                            </button>
+                </form>
 
-                            <a href="{{ route('laporan.peminjaman') }}"
-                            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition shadow-sm">
+                <hr>
 
-                                Reset
+                <table id="example1" class="table table-bordered table-striped">
 
-                            </a>
+                    <thead>
 
-                        </div>
+                        <tr>
 
-                    </form>
+                            <th>Member</th>
+                            <th>Buku</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Tanggal Kembali</th>
+                            <th>Status</th>
+                            <th>Denda</th>
 
-                </div>
+                        </tr>
 
-                {{-- TABLE --}}
-                <div class="overflow-x-auto">
+                    </thead>
 
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <tbody>
 
-                        <thead class="bg-gray-50">
+                        @foreach($laporan as $item)
 
-                            <tr>
+                        <tr>
 
-                                <th class="px-6 py-3 text-left">
-                                    Member
-                                </th>
+                            <td>
+                                <strong>{{ $item->user->name ?? '-' }}</strong><br>
+                                <small>{{ $item->user->id_register ?? '-' }}</small>
+                            </td>
 
-                                <th class="px-6 py-3 text-left">
-                                    Buku
-                                </th>
+                            <td>
+                                {{ $item->buku->judul ?? '-' }}
+                            </td>
 
-                                <th class="px-6 py-3 text-left">
-                                    Tanggal
-                                </th>
+                            <td>
+                                {{ $item->tanggal_pinjam }}
+                            </td>
 
-                                <th class="px-6 py-3 text-center">
-                                    Status
-                                </th>
+                            <td>
+                                {{ $item->tanggal_kembali }}
+                            </td>
 
-                                <th class="px-6 py-3 text-center">
-                                    Denda
-                                </th>
+                            <td>
 
-                            </tr>
+                                @if($item->status=='pending')
 
-                        </thead>
+                                <span class="badge badge-secondary">
+                                    Pending
+                                </span>
 
-                        <tbody class="divide-y divide-gray-200 bg-white">
+                                @elseif($item->status=='dipinjam')
 
-                            @forelse($laporan as $item)
+                                <span class="badge badge-warning">
+                                    Dipinjam
+                                </span>
 
-                                <tr>
+                                @else
 
-                                    <td class="px-6 py-4">
+                                <span class="badge badge-success">
+                                    Dikembalikan
+                                </span>
 
-                                        <div class="font-semibold">
-                                            {{ $item->user->name ?? '-' }}
-                                        </div>
+                                @endif
 
-                                        <div class="text-sm text-gray-500">
-                                            {{ $item->user->id_register ?? '-' }}
-                                        </div>
+                            </td>
 
-                                    </td>
+                            <td>
 
-                                    <td class="px-6 py-4">
-                                        {{ $item->buku->judul ?? '-' }}
-                                    </td>
+                                <strong class="text-danger">
 
-                                    <td class="px-6 py-4 text-sm">
+                                    Rp {{ number_format($item->denda,0,',','.') }}
 
-                                        <div>
-                                            Pinjam:
-                                            {{ $item->tanggal_pinjam }}
-                                        </div>
+                                </strong>
 
-                                        <div>
-                                            Kembali:
-                                            {{ $item->tanggal_kembali }}
-                                        </div>
+                            </td>
 
-                                    </td>
+                        </tr>
 
-                                    <td class="px-6 py-4 text-center">
-                                        {{ ucfirst($item->status) }}
-                                    </td>
+                        @endforeach
 
-                                    <td class="px-6 py-4 text-center text-red-600 font-bold">
+                    </tbody>
 
-                                        Rp {{ number_format($item->denda, 0, ',', '.') }}
+                    <tfoot>
 
-                                    </td>
+                        <tr>
 
-                                </tr>
+                            <th>Member</th>
+                            <th>Buku</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Tanggal Kembali</th>
+                            <th>Status</th>
+                            <th>Denda</th>
 
-                            @empty
+                        </tr>
 
-                                <tr>
+                    </tfoot>
 
-                                    <td colspan="5"
-                                        class="px-6 py-10 text-center text-gray-500">
-
-                                        Data kosong
-
-                                    </td>
-
-                                </tr>
-
-                            @endforelse
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                <div class="p-6 border-t">
-                    {{ $laporan->links() }}
-                </div>
+                </table>
 
             </div>
 
         </div>
 
     </div>
+</section>
+@endsection
 
-</x-app-layout>
+@section('javascript')
+<script>
+    $(function() {
+
+        $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            buttons: [
+                "copy",
+                "csv",
+                "excel",
+                "pdf",
+                "print",
+                "colvis"
+            ]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    });
+</script>
+@endsection

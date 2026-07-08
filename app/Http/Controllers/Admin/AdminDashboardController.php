@@ -17,7 +17,6 @@ class AdminDashboardController extends Controller
         $pinjamAktif = Pinjam::where('status', 'dipinjam')->count();
         $pinjamTerbaru = Pinjam::with(['user', 'buku'])
             ->latest()
-            ->take(5)
             ->get();
 
         return view('dashboard', compact(

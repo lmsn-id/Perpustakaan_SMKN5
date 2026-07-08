@@ -1,155 +1,140 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Halaman Trash Peminjaman')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Data Pinjaman Terhapus
-        </h2>
-    </x-slot>
+@section('content')
+<section class="content">
+    <div class="container-fluid">
 
-    <div class="py-6">
+        @include('tampilan.alert')
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="card">
 
-            {{-- Alert --}}
-            @if(session('success'))
+            <div class="card-header">
 
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                <h3 class="card-title">
+                    Tabel Data Seluruh Trash Peminjaman
+                </h3>
 
-                    {{ session('success') }}
-
-                </div>
-
-            @endif
-
-            <div class="bg-white shadow-sm sm:rounded-lg">
-
-                {{-- Header --}}
-                <div class="p-6 border-b flex justify-between items-center">
-
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        Trashed Peminjaman
-                    </h2>
-
-                    <a href="{{ route('pinjam.index') }}"
-                       class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
-
-                        Kembali
-
+                <div class="card-tools">
+                    <a href="{{ route('pinjam.index') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-left"></i>
+                        Data Peminjaman
                     </a>
-
                 </div>
 
-                {{-- Table --}}
-                <div class="overflow-x-auto">
+            </div>
 
-                    <table class="min-w-full divide-y divide-gray-200">
+            <div class="card-body">
 
-                        <thead class="bg-gray-50">
+                <table id="example1" class="table table-bordered table-striped">
 
-                            <tr>
+                    <thead>
 
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Buku
-                                </th>
+                        <tr>
 
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Peminjam
-                                </th>
+                            <th>Judul Buku</th>
+                            <th>Peminjam</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Tanggal Kembali</th>
+                            <th>Status</th>
+                            <th width="180">Aksi</th>
 
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                                    Aksi
-                                </th>
+                        </tr>
 
-                            </tr>
+                    </thead>
 
-                        </thead>
+                    <tbody>
 
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($pinjam as $item)
 
-                            @forelse($pinjam as $item)
+                        <tr>
+                            <td>{{ $item->buku->judul }}</td>
+                            <td>{{ $item->user->name }}</td>
+                            <td>{{ $item->tanggal_pinjam }}</td>
+                            <td>{{ $item->tanggal_kembali }}</td>
+                            <td>
+                                @if($item->status == 'Dipinjam')
+                                <span class="badge badge-warning">
+                                    Dipinjam
+                                </span>
+                                @else
+                                <span class="badge badge-success">
+                                    Dikembalikan
+                                </span>
+                                @endif
+                            </td>
 
-                                <tr>
+                            <td>
+                                <form action="{{ route('pinjam.restore',$item->id) }}"
+                                    method="POST"
+                                    style="display:inline-block;">
+                                    @csrf
+                                    <button class="btn btn-success btn-sm">
+                                        Restore
+                                    </button>
+                                </form>
 
-                                    <td class="px-6 py-4 font-semibold">
-                                        {{ $item->buku->judul }}
-                                    </td>
+                                <form action="{{ route('pinjam.forceDelete',$item->id) }}"
+                                    method="POST"
+                                    style="display:inline-block;">
 
-                                    <td class="px-6 py-4">
-                                        {{ $item->user->name }}
-                                    </td>
+                                    @csrf
+                                    @method('DELETE')
 
-                                    <td class="px-6 py-4">
+                                    <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus permanen data ini?')">
+                                        <i class="fas fa-trash"></i>
+                                        Hapus
 
-                                        <div class="flex gap-2 justify-center">
+                                    </button>
 
-                                            {{-- Restore --}}
-                                            <form action="{{ route('pinjam.restore', $item->id) }}"
-                                                  method="POST">
+                                </form>
 
-                                                @csrf
+                            </td>
 
-                                                <button class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm">
+                        </tr>
 
-                                                    Restore
+                        @endforeach
 
-                                                </button>
+                    </tbody>
 
-                                            </form>
+                    <tfoot>
 
-                                            {{-- Force Delete --}}
-                                            <form action="{{ route('pinjam.forceDelete', $item->id) }}"
-                                                  method="POST">
+                        <tr>
 
-                                                @csrf
-                                                @method('DELETE')
+                            <th>Judul Buku</th>
+                            <th>Peminjam</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Tanggal Kembali</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
 
-                                                <button onclick="return confirm('Hapus permanen?')"
-                                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm">
+                        </tr>
 
-                                                    Hapus
+                    </tfoot>
 
-                                                </button>
-
-                                            </form>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            @empty
-
-                                <tr>
-
-                                    <td colspan="3"
-                                        class="text-center p-6 text-gray-500">
-
-                                        Tidak ada data terhapus
-
-                                    </td>
-
-                                </tr>
-
-                            @endforelse
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                {{-- Pagination --}}
-                <div class="p-6">
-
-                    {{ $pinjam->links() }}
-
-                </div>
+                </table>
 
             </div>
 
         </div>
 
     </div>
+</section>
+@endsection
 
-</x-app-layout>
+@section('javascript')
+<script>
+    $(function() {
+
+        $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    });
+</script>
+@endsection

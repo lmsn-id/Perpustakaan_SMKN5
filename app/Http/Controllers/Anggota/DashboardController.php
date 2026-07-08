@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $pinjam = Pinjam::with('buku')
             ->where('user_id', $user->id)
             ->latest()
-            ->paginate(5);
+            ->get();
 
         return view('anggota.dashboard', compact(
             'dipinjam',

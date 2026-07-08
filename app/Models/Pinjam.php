@@ -12,24 +12,34 @@ class Pinjam extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'pinjams';
-
     protected $fillable = [
+
         'user_id',
         'buku_id',
+        'jumlah',
         'tanggal_pinjam',
         'durasi_pinjam',
         'tanggal_kembali',
-        'status', 'jumlah', 'kelas_id', 'denda',
+        'tanggal_dikembalikan',
+        'status',
+        'denda',
     ];
+
+    protected $casts = [
+        'tanggal_pinjam' => 'date',
+        'tanggal_kembali' => 'date',
+        'tanggal_dikembalikan' => 'date',
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION
+    |--------------------------------------------------------------------------
+    */
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class, 'id_kelas');
     }
 
     public function buku()
@@ -37,43 +47,35 @@ class Pinjam extends Model
         return $this->belongsTo(Buku::class);
     }
 
-    // public function getDendaOtomatisAttribute()
-    // {
-    //     if ($this->status == 'dikembalikan') {
-    //         return $this->denda; // dari database
-    //     }
+    public function pembayaranDenda()
+    {
+        return $this->hasOne(PembayaranDenda::class);
+    }
 
-    //     $telat = Carbon::now()->diffInDays($this->tanggal_kembali, false);
-
-    //     return $telat < 0 ? abs($telat) * 1000 : 0;
-    // }
+    /*
+    |--------------------------------------------------------------------------
+    | ACCESSOR
+    |--------------------------------------------------------------------------
+    */
 
     public function getDendaOtomatisAttribute()
     {
-        // jika status dipinjam → hitung realtime
+        // Denda dihitung realtime jika buku masih dipinjam
         if ($this->status == 'dipinjam') {
 
             $today = Carbon::now();
+            if ($today->gt($this->tanggal_kembali)) {
+                $hariTelat = $this->tanggal_kembali->diffInDays($today);
+                return $hariTelat * 1000;
 
-            $tanggalKembali = Carbon::parse($this->tanggal_kembali);
-
-            if ($today->gt($tanggalKembali)) {
-
-                $hariTelat = $tanggalKembali->diffInDays($today);
-
-                $dendaPerHari = 1000;
-
-                return $hariTelat * $dendaPerHari;
             }
+
         }
 
-        // jika sudah dikembalikan
+        // Jika sudah dikembalikan gunakan denda yang tersimpan
         if ($this->status == 'dikembalikan') {
-
             return $this->denda;
         }
-
-        // pending / dibatalkan
         return 0;
     }
 }

@@ -36,6 +36,6 @@ class Buku extends Model
 
     public function peminjaman()
     {
-        return $this->hasMany(Peminjaman::class);
+        return $this->hasMany(Pinjam::class);
     }
 }

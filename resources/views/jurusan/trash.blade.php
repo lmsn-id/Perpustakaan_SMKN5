@@ -1,35 +1,53 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Trash Jurusan')
 
-    <x-slot name="header">
-        Trash Jurusan
-    </x-slot>
+@section('content')
 
-    <div class="py-6">
+<section class="content">
 
-        <div class="max-w-7xl mx-auto">
+    <div class="container-fluid">
 
-            <div class="bg-white p-6 rounded shadow">
+        @include('tampilan.alert')
 
-                <div class="mb-4">
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+
+                    Tabel Data Trash Jurusan
+
+                </h3>
+
+                <div class="card-tools">
 
                     <a href="{{ route('jurusan.index') }}"
-                       class="bg-blue-500 text-white px-4 py-2 rounded">
+                        class="btn btn-primary btn-sm">
 
-                        Kembali
+                        <i class="fas fa-arrow-left"></i>
+
+                        Data Jurusan
 
                     </a>
 
                 </div>
 
-                <table class="w-full border">
+            </div>
+
+            <div class="card-body">
+
+                <table id="example1"
+                    class="table table-bordered table-striped">
 
                     <thead>
 
                         <tr>
 
-                            <th class="border p-3">No</th>
-                            <th class="border p-3">Nama Jurusan</th>
-                            <th class="border p-3">Aksi</th>
+                            <th width="70">No</th>
+
+                            <th>Nama Jurusan</th>
+
+                            <th width="220">Aksi</th>
 
                         </tr>
 
@@ -41,41 +59,48 @@
 
                         <tr>
 
-                            <td class="border p-3">
+                            <td class="text-center">
+
                                 {{ $loop->iteration }}
+
                             </td>
 
-                            <td class="border p-3">
+                            <td>
+
                                 {{ $item->nama_jurusan }}
+
                             </td>
 
-                            <td class="border p-3">
+                            <td class="text-center">
 
-                                <div class="flex gap-2">
+                                <a href="{{ route('jurusan.restore', $item->id) }}"
+                                    class="btn btn-success btn-sm"
+                                    onclick="return confirm('Restore data ini?')">
 
-                                    <a href="{{ route('jurusan.restore', $item->id) }}"
-                                       class="w-24 text-center bg-green-500 text-white px-3 py-2 rounded">
+                                    <i class="fas fa-undo"></i>
 
-                                        Restore
+                                    Restore
 
-                                    </a>
+                                </a>
 
-                                    <form action="{{ route('jurusan.forceDelete', $item->id) }}"
-                                          method="POST">
+                                <form action="{{ route('jurusan.forceDelete',$item->id) }}"
+                                    method="POST"
+                                    style="display:inline-block;">
 
-                                        @csrf
-                                        @method('DELETE')
+                                    @csrf
+                                    @method('DELETE')
 
-                                        <button type="submit"
-                                                class="w-32 bg-red-500 text-white px-3 py-2 rounded">
+                                    <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus permanen data ini?')">
 
-                                            Delete
+                                        <i class="fas fa-trash"></i>
 
-                                        </button>
+                                        Hapus
 
-                                    </form>
+                                    </button>
 
-                                </div>
+                                </form>
 
                             </td>
 
@@ -86,9 +111,9 @@
                         <tr>
 
                             <td colspan="3"
-                                class="text-center p-4">
+                                class="text-center">
 
-                                Trash kosong
+                                Data Trash Jurusan Masih Kosong
 
                             </td>
 
@@ -98,6 +123,20 @@
 
                     </tbody>
 
+                    <tfoot>
+
+                        <tr>
+
+                            <th>No</th>
+
+                            <th>Nama Jurusan</th>
+
+                            <th>Aksi</th>
+
+                        </tr>
+
+                    </tfoot>
+
                 </table>
 
             </div>
@@ -106,4 +145,42 @@
 
     </div>
 
-</x-app-layout>
+</section>
+
+@endsection
+
+@section('javascript')
+
+<script>
+    $(function() {
+
+        $("#example1").DataTable({
+
+            responsive: true,
+
+            lengthChange: false,
+
+            autoWidth: false,
+
+            buttons: [
+
+                "copy",
+
+                "csv",
+
+                "excel",
+
+                "pdf",
+
+                "print",
+
+                "colvis"
+
+            ]
+
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    });
+</script>
+
+@endsection

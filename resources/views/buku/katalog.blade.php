@@ -1,32 +1,51 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Katalog Buku')
 
-    <x-slot name="header">
-        Katalog Buku
-    </x-slot>
+@section('content')
 
-    <div class="py-6">
+<section class="content">
 
-        <div class="max-w-7xl mx-auto">
+    <div class="container-fluid">
 
-            <div class="bg-white p-6 rounded shadow mb-6">
+        {{-- Search --}}
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title">
+
+                    <i class="fas fa-search"></i>
+
+                    Pencarian Buku
+
+                </h3>
+
+            </div>
+
+            <div class="card-body">
 
                 <form action="{{ route('buku.katalog') }}"
-                      method="GET">
+                    method="GET">
 
-                    <div class="flex gap-2">
+                    <div class="input-group">
 
                         <input type="text"
-                               name="search"
-                               value="{{ request('search') }}"
-                               placeholder="Cari judul, pengarang, penerbit, kode buku..."
-                               class="w-full border rounded p-3">
+                            name="search"
+                            class="form-control"
+                            value="{{ request('search') }}"
+                            placeholder="Cari Judul, Pengarang, Penerbit atau Kode Buku">
 
-                        <button type="submit"
-                                class="bg-blue-500 text-white px-6 rounded">
+                        <div class="input-group-append">
 
-                            Cari
+                            <button class="btn btn-primary">
 
-                        </button>
+                                <i class="fas fa-search"></i>
+
+                                Cari
+
+                            </button>
+
+                        </div>
 
                     </div>
 
@@ -34,89 +53,185 @@
 
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>
 
-                @forelse($buku as $item)
+        {{-- Katalog --}}
+        <div class="row">
 
-                <div class="bg-white rounded shadow overflow-hidden">
+            @forelse($buku as $item)
 
-                    @if($item->cover)
+            <div class="col-lg-3 col-md-4 col-sm-6">
 
-                        <img src="{{ asset('storage/' . $item->cover) }}"
-                             class="w-full h-72 object-cover">
+                <div class="card card-primary card-outline">
 
-                    @else
+                    <div class="text-center pt-3">
 
-                        <div class="w-full h-72 bg-gray-200 flex items-center justify-center">
+                        @if($item->cover)
 
-                            Tidak Ada Cover
+                        <img src="{{ asset('storage/'.$item->cover) }}"
+                            class="img-thumbnail"
+                            style="height:260px;width:180px;object-fit:cover;">
 
-                        </div>
+                        @else
 
-                    @endif
+                        <img src="{{ asset('images/no-image.png') }}"
+                            class="img-thumbnail"
+                            style="height:260px;width:180px;object-fit:cover;">
 
-                    <div class="p-4">
+                        @endif
 
-                        <h2 class="font-bold text-lg min-h-[60px]">
+                    </div>
+
+                    <div class="card-body">
+
+                        <h5 class="font-weight-bold text-primary"
+                            style="height:48px;overflow:hidden;">
+
                             {{ $item->judul }}
-                        </h2>
 
-                        <p class="text-sm text-gray-600 mt-2">
+                        </h5>
+
+                        <p class="text-muted mb-1">
+
+                            <i class="fas fa-user-edit"></i>
+
                             {{ $item->pengarang }}
+
                         </p>
 
-                        <div class="mt-3 text-sm space-y-1">
+                        <p class="mb-1">
 
-                            <p>
-                                <span class="font-semibold">Kategori:</span>
+                            <span class="badge badge-secondary">
+
                                 {{ $item->kategori->nama_kategori }}
-                            </p>
 
-                            <p>
-                                <span class="font-semibold">Rak:</span>
-                                {{ $item->rak->nama_rak }}
-                            </p>
+                            </span>
 
-                            <p>
-                                <span class="font-semibold">Kode:</span>
-                                {{ $item->kode_buku }}
-                            </p>
+                        </p>
 
-                        </div>
+                        <table class="table table-sm table-borderless mb-2">
 
-                        <div class="mt-4">
+                            <tr>
 
-                            <a href="{{ route('buku.show', $item->id) }}"
-                               class="w-full inline-block text-center bg-blue-500 text-white px-4 py-2 rounded">
+                                <td width="70">
 
-                                Detail Buku
+                                    Kode
 
-                            </a>
+                                </td>
 
-                        </div>
+                                <td>
+
+                                    : {{ $item->kode_buku }}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+
+                                    Rak
+
+                                </td>
+
+                                <td>
+
+                                    : {{ $item->rak->nama_rak }}
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+
+                                    Stok
+
+                                </td>
+
+                                <td>
+
+                                    :
+
+                                    @if($item->stok==0)
+
+                                    <span class="badge badge-danger">
+
+                                        Habis
+
+                                    </span>
+
+                                    @elseif($item->stok<=5)
+
+                                        <span class="badge badge-warning">
+
+                                        {{ $item->stok }}
+
+                                        </span>
+
+                                        @else
+
+                                        <span class="badge badge-success">
+
+                                            {{ $item->stok }}
+
+                                        </span>
+
+                                        @endif
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+                    <div class="card-footer text-center">
+
+                        <a href="{{ route('buku.show',$item->id) }}"
+                            class="btn btn-primary btn-sm btn-block">
+
+                            <i class="fas fa-eye"></i>
+
+                            Detail Buku
+
+                        </a>
 
                     </div>
 
                 </div>
 
-                @empty
+            </div>
 
-                <div class="col-span-4 bg-white p-10 rounded shadow text-center">
+            @empty
 
-                    Buku tidak ditemukan
+            <div class="col-12">
+
+                <div class="alert alert-warning text-center">
+
+                    <i class="fas fa-info-circle"></i>
+
+                    Buku tidak ditemukan.
 
                 </div>
 
-                @endforelse
-
             </div>
 
-            <div class="mt-6">
-                {{ $buku->links() }}
-            </div>
+            @endforelse
+
+        </div>
+
+        <div class="mt-3">
+
+            {{ $buku->appends(request()->query())->links() }}
 
         </div>
 
     </div>
 
-</x-app-layout>
+</section>
+
+@endsection

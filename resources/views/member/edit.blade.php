@@ -1,127 +1,80 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Edit Member')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Member
-        </h2>
-    </x-slot>
+@section('content')
+<section class="content">
 
-    <div class="py-8">
+    <div class="container-fluid">
 
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+        @include('tampilan.alert')
 
-            {{-- ERROR --}}
-            @if ($errors->any())
+        <div class="card card-default">
 
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
+            <div class="card-header">
 
-                    <ul class="list-disc pl-5 space-y-1">
+                <h3 class="card-title">Halaman Edit Member</h3>
 
-                        @foreach ($errors->all() as $error)
+                <div class="card-tools">
 
-                            <li>{{ $error }}</li>
+                    <button type="button"
+                            class="btn btn-tool"
+                            data-card-widget="collapse">
 
-                        @endforeach
+                        <i class="fas fa-minus"></i>
 
-                    </ul>
+                    </button>
 
-                </div>
+                    <button type="button"
+                            class="btn btn-tool"
+                            data-card-widget="remove">
 
-            @endif
+                        <i class="fas fa-times"></i>
 
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-2xl">
-
-                {{-- HEADER --}}
-                <div class="bg-gradient-to-r from-yellow-500 to-orange-500 px-8 py-8">
-
-                    <div class="flex items-center gap-5">
-
-                        <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
-
-                            <span class="text-3xl font-bold text-orange-500">
-                                {{ strtoupper(substr($member->name, 0, 1)) }}
-                            </span>
-
-                        </div>
-
-                        <div class="text-white">
-
-                            <h1 class="text-3xl font-bold">
-                                {{ $member->name }}
-                            </h1>
-
-                            <p class="mt-1 text-orange-100">
-                                ID Register :
-                                <span class="font-semibold">
-                                    {{ $member->id_register }}
-                                </span>
-                            </p>
-
-                        </div>
-
-                    </div>
+                    </button>
 
                 </div>
 
-                {{-- FORM --}}
-                <div class="p-8">
+            </div>
 
-                    <form action="{{ route('member.update', $member->id) }}"
-                          method="POST">
+            <form action="{{ route('member.update', $member->id) }}" method="POST">
 
-                        @csrf
-                        @method('PUT')
+                @csrf
+                @method('PUT')
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card-body">
 
-                            {{-- NAMA --}}
-                            <div>
+                    <div class="row">
 
-                                <label class="block mb-2 text-sm font-semibold text-gray-700">
-                                    Nama Lengkap
-                                </label>
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <label>Nama Lengkap</label>
 
                                 <input type="text"
+                                       class="form-control"
                                        name="name"
                                        value="{{ old('name', $member->name) }}"
-                                       class="w-full border-gray-300 rounded-xl shadow-sm focus:ring focus:ring-yellow-200">
+                                       placeholder="Masukkan Nama Lengkap">
 
                             </div>
 
-                            {{-- EMAIL --}}
-                            <div>
+                            <div class="form-group">
 
-                                <label class="block mb-2 text-sm font-semibold text-gray-700">
-                                    Email
-                                </label>
+                                <label>Kelas</label>
 
-                                <input type="email"
-                                       name="email"
-                                       value="{{ old('email', $member->email) }}"
-                                       class="w-full border-gray-300 rounded-xl shadow-sm focus:ring focus:ring-yellow-200">
+                                <select class="form-control select2bs4"
+                                        name="kelas_id"
+                                        style="width:100%;">
 
-                            </div>
+                                    <option value="">-- Pilih Kelas --</option>
 
-                            {{-- KELAS --}}
-                            <div>
+                                    @foreach($kelas as $k)
 
-                                <label class="block mb-2 text-sm font-semibold text-gray-700">
-                                    Kelas
-                                </label>
+                                        <option value="{{ $k->id }}"
+                                            {{ old('kelas_id', $member->kelas_id) == $k->id ? 'selected' : '' }}>
 
-                                <select name="kelas_id"
-                                        class="w-full border-gray-300 rounded-xl shadow-sm focus:ring focus:ring-yellow-200">
-
-                                    <option value="">
-                                        -- Pilih Kelas --
-                                    </option>
-
-                                    @foreach($kelas as $item)
-
-                                        <option value="{{ $item->id }}"
-                                            {{ old('kelas_id', $member->kelas_id) == $item->id ? 'selected' : '' }}>
-
-                                            {{ $item->nama_kelas }}
+                                            {{ $k->nama_kelas }}
 
                                         </option>
 
@@ -131,79 +84,111 @@
 
                             </div>
 
-                            {{-- NO WA --}}
-                            <div>
+                            <div class="form-group">
 
-                                <label class="block mb-2 text-sm font-semibold text-gray-700">
-                                    Nomor WhatsApp
-                                </label>
+                                <label>Alamat Email</label>
 
-                                <input type="text"
-                                       name="no_wa"
-                                       value="{{ old('no_wa', $member->no_wa) }}"
-                                       class="w-full border-gray-300 rounded-xl shadow-sm focus:ring focus:ring-yellow-200">
+                                <input type="email"
+                                       class="form-control"
+                                       name="email"
+                                       value="{{ old('email', $member->email) }}"
+                                       placeholder="Masukkan Email">
 
                             </div>
 
-                            {{-- PASSWORD --}}
-                            <div class="md:col-span-2">
+                        </div>
 
-                                <label class="block mb-2 text-sm font-semibold text-gray-700">
-                                    Password Baru
-                                </label>
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <label>No WhatsApp</label>
+
+                                <input type="text"
+                                       class="form-control"
+                                       name="no_wa"
+                                       value="{{ old('no_wa', $member->no_wa) }}"
+                                       placeholder="Masukkan Nomor WhatsApp">
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label>Password</label>
 
                                 <input type="password"
+                                       class="form-control"
                                        name="password"
-                                       class="w-full border-gray-300 rounded-xl shadow-sm focus:ring focus:ring-yellow-200">
+                                       placeholder="Kosongkan jika tidak ingin diubah">
 
-                                <small class="text-gray-500">
-                                    Kosongkan jika tidak ingin mengganti password
+                                <small class="text-muted">
+
+                                    Biarkan kosong apabila password tidak ingin diubah.
+
                                 </small>
 
                             </div>
 
-                            {{-- ALAMAT --}}
-                            <div class="md:col-span-2">
+                            <div class="form-group">
 
-                                <label class="block mb-2 text-sm font-semibold text-gray-700">
-                                    Alamat
-                                </label>
+                                <label>Alamat</label>
 
-                                <textarea name="alamat"
-                                          rows="4"
-                                          class="w-full border-gray-300 rounded-xl shadow-sm focus:ring focus:ring-yellow-200">{{ old('alamat', $member->alamat) }}</textarea>
+                                <textarea class="form-control"
+                                          name="alamat"
+                                          rows="3"
+                                          placeholder="Masukkan Alamat">{{ old('alamat', $member->alamat) }}</textarea>
 
                             </div>
 
                         </div>
 
-                        {{-- BUTTON --}}
-                        <div class="mt-8 flex flex-wrap gap-3">
-
-                            <button type="submit"
-                                    class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl shadow transition">
-
-                                Update Member
-
-                            </button>
-
-                            <a href="{{ route('member.index') }}"
-                               class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl shadow transition">
-
-                                Kembali
-
-                            </a>
-
-                        </div>
-
-                    </form>
+                    </div>
 
                 </div>
 
-            </div>
+                <div class="card-footer">
+
+                    <button type="submit"
+                            class="btn btn-warning">
+
+                        <i class="fas fa-save"></i>
+
+                        Update
+
+                    </button>
+
+                    <a href="{{ route('member.index') }}"
+                       class="btn btn-secondary">
+
+                        <i class="fas fa-arrow-left"></i>
+
+                        Kembali
+
+                    </a>
+
+                </div>
+
+            </form>
 
         </div>
 
     </div>
 
-</x-app-layout>
+</section>
+@endsection
+
+@section('javascript')
+
+<script>
+
+$(function () {
+
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    });
+
+});
+
+</script>
+
+@endsection

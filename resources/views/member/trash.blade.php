@@ -1,178 +1,83 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Halaman Trash Member')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Trash Member
-        </h2>
-    </x-slot>
-
-    <div class="py-6">
-
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            {{-- ALERT SUCCESS --}}
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-                    {{ session('success') }}
+@section('content')
+<section class="content">
+  <div class="container-fluid">
+    @include('tampilan.alert')
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Tabel Data Seluruh Trash Member</h3>
+                <div class="card-tools">
+                    <a href="{{ route('member.index') }}" class="btn btn-primary btn-sm">Data Member</a>
                 </div>
-            @endif
-
-            <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-
-                {{-- HEADER --}}
-                <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">
-                            Data Member Terhapus
-                        </h2>
-
-                        <p class="text-sm text-gray-500 mt-1">
-                            Daftar member yang telah dihapus sementara
-                        </p>
-                    </div>
-
-                    <a href="{{ route('member.index') }}"
-                       class="px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition">
-                        Kembali
-                    </a>
-
-                </div>
-
-                {{-- TABLE --}}
-                <div class="overflow-x-auto">
-
-                    <table class="min-w-full divide-y divide-gray-200">
-
-                        <thead class="bg-gray-50">
-
-                            <tr>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    ID Register
-                                </th>
-
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Nama
-                                </th>
-
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Email
-                                </th>
-
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Kelas
-                                </th>
-
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    No WA
-                                </th>
-
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">
-                                    Aksi
-                                </th>
-                            </tr>
-
-                        </thead>
-
-                        <tbody class="bg-white divide-y divide-gray-200">
-
-                            @forelse($member as $item)
-
-                                <tr class="hover:bg-gray-50">
-
-                                    {{-- ID REGISTER --}}
-                                    <td class="px-6 py-4">
-                                        <span class="font-semibold text-blue-600">
-                                            {{ $item->id_register }}
-                                        </span>
-                                    </td>
-
-                                    {{-- NAMA --}}
-                                    <td class="px-6 py-4">
-                                        <div class="font-medium text-gray-800">
-                                            {{ $item->name }}
-                                        </div>
-                                    </td>
-
-                                    {{-- EMAIL --}}
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        {{ $item->email }}
-                                    </td>
-
-                                    {{-- KELAS --}}
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        {{ $item->kelas->nama_kelas ?? '-' }}
-                                    </td>
-
-                                    {{-- NO WA --}}
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        {{ $item->no_wa ?? '-' }}
-                                    </td>
-
-                                    {{-- AKSI --}}
-                                    <td class="px-6 py-4">
-
-                                        <div class="flex justify-center gap-2">
-
-                                            {{-- RESTORE --}}
-                                            <a href="{{ route('member.restore', $item->id) }}"
-                                               class="px-4 py-2 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600 transition">
-
-                                                Restore
-
-                                            </a>
-
-                                            {{-- FORCE DELETE --}}
-                                            <form action="{{ route('member.forceDelete', $item->id) }}"
-                                                  method="POST">
-
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="submit"
-                                                        onclick="return confirm('Yakin ingin menghapus permanen data ini?')"
-                                                        class="px-4 py-2 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition">
-
-                                                    Delete Permanen
-
-                                                </button>
-
-                                            </form>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            @empty
-
-                                <tr>
-                                    <td colspan="6"
-                                        class="px-6 py-10 text-center text-gray-500">
-
-                                        Tidak ada data member di trash
-
-                                    </td>
-                                </tr>
-
-                            @endforelse
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                {{-- PAGINATION --}}
-                <div class="p-6 border-t border-gray-200">
-                    {{ $member->links() }}
-                </div>
-
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>ID Register</th>
+                    <th>Nama Member</th>
+                    <th>Kelas</th>
+                    <th>Nomor WA</th>
+                    <th>Email</th>
+                    <th>Aksi</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($member as $item)
+                        <tr>
+                            <td>{{ $item->id_register }}</td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
+                            <td>{{ $item->no_wa }}</td>
+                            <td>{{ $item->email }}</td>
+                            <td>
+                                <a href="{{ route('member.restore', $item->id) }}" class="btn btn-success btn-sm">Restore</a>
+                                <form action="{{ route('member.forceDelete', $item->id) }}" method="POST" style="display: inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus permanen data ini?')">Hapus Permanen</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>ID Register</th>
+                    <th>Nama Member</th>
+                    <th>Kelas</th>
+                    <th>Nomor WA</th>
+                    <th>Email</th>
+                    <th>Aksi</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
             </div>
+  </div>
+</section>
+@endsection
 
-        </div>
-
-    </div>
-
-</x-app-layout>
+@section('javascript')
+        <script>
+          $(function () {
+            $("#example1").DataTable({
+              "responsive": true, "lengthChange": false, "autoWidth": false,
+              "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+              "paging": true,
+              "lengthChange": false,
+              "searching": false,
+              "ordering": true,
+              "info": true,
+              "autoWidth": false,
+              "responsive": true,
+            });
+          });
+        </script>
+@endsection

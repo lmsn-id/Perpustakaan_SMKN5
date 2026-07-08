@@ -1,354 +1,327 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title','Data Peminjaman')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Data Peminjaman Buku
-        </h2>
-    </x-slot>
-
-    <div class="py-6">
-
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            {{-- ALERT --}}
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-
-                {{-- HEADER --}}
-                <div class="p-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">
-                            Data Peminjaman
-                        </h2>
-                        <p class="text-sm text-gray-500 mt-1">
-                            Daftar peminjaman buku perpustakaan
-                        </p>
-                    </div>
-
-                    @if(Auth::user()->role == 'admin')
-                        <a href="{{ route('pinjam.trashed') }}"
-                           class="px-4 py-2 bg-red-500 text-white text-xs font-semibold rounded hover:bg-red-600">
-                            Trash
-                        </a>
+@section('content')
+<section class="content">
+    <div class="container-fluid">
+        @include('tampilan.alert')
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    Daftar Peminjaman Buku Perpustakaan
+                </h3>
+                <div class="card-tools">
+                    @if(auth()->user()->role=='admin')
+                    <a href="{{ route('peminjaman-manual.create') }}"
+                        class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i>
+                        Pinjam Manual
+                    </a>
                     @endif
-
+                    @if(auth()->user()->role=='admin')
+                    <a href="{{ route('pinjam.trashed') }}"
+                        class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                        Trash
+                    </a>
+                    @endif
                 </div>
-
-                {{-- SEARCH --}}
-                <div class="p-6 border-b bg-gray-50">
-
-                    <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-3">
-
-                        <input type="text"
-                               name="search"
-                               value="{{ request('search') }}"
-                               placeholder="Cari Nama / Judul Buku / Kelas"
-                               class="border rounded-lg p-2 w-full">
-
-                        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                            Search
-                        </button>
-
-                    </form>
-
-                </div>
-
-                {{-- TABLE --}}
-                <div class="overflow-x-auto">
-
-                    <table class="min-w-full divide-y divide-gray-200">
-
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Buku</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Peminjam</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Kelas</th>
-                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">Durasi</th>
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">Jumlah</th>
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">Denda</th>
-                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="bg-white divide-y divide-gray-200">
-
-                            @forelse($pinjam as $item)
-
-                                <tr>
-
-                                    {{-- BUKU --}}
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-4">
-
-                                            @if($item->buku->cover)
-                                                <img src="{{ asset('storage/' . $item->buku->cover) }}"
-                                                     class="w-16 h-20 object-cover rounded-lg">
-                                            @else
-                                                <div class="w-16 h-20 bg-gray-200 flex items-center justify-center text-xs">
-                                                    No Cover
-                                                </div>
-                                            @endif
-
-                                            <div>
-                                                <div class="font-semibold">
-                                                    {{ $item->buku->judul }}
-                                                </div>
-                                                <div class="text-sm text-gray-500">
-                                                    {{ $item->buku->pengarang }}
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </td>
-
-                                    {{-- PEMINJAM --}}
-                                    <td class="px-6 py-4 text-sm">
-                                        {{ $item->user->name }} <br>
-                                        <span class="text-xs text-gray-500">
-                                            {{ $item->user->id_register ?? '-' }}
-                                        </span>
-                                    </td>
-
-                                    {{-- KELAS --}}
-                                    <td class="px-6 py-4 text-sm">
-                                        {{ $item->user->kelas->nama_kelas ?? '-' }}
-                                    </td>
-
-                                    {{-- TANGGAL --}}
-                                    <td class="px-6 py-4 text-sm">
-                                        <div><b>Pinjam:</b> {{ $item->tanggal_pinjam }}</div>
-                                        <div><b>Kembali:</b> {{ $item->tanggal_kembali }}</div>
-                                    </td>
-
-                                    {{-- DURASI --}}
-                                    <td class="px-6 py-4 text-center">
-                                        {{ $item->durasi_pinjam }} Hari
-                                    </td>
-
-                                    {{-- JUMLAH --}}
-                                    <td class="px-6 py-4 text-center">
-                                        {{ $item->jumlah }}
-                                    </td>
-
-                                    {{-- STATUS --}}
-                                    <td class="px-6 py-4 text-center">
-
-                                        @if($item->status == 'pending')
-                                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">
-                                                Pending
-                                            </span>
-
-                                        @elseif($item->status == 'dipinjam')
-                                            <span class="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
-                                                Dipinjam
-                                            </span>
-
-                                        @elseif($item->status == 'dikembalikan')
-                                            <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                                                Dikembalikan
-                                            </span>
-
-                                        @elseif($item->status == 'dibatalkan')
-                                            <span class="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-700">
-                                                Dibatalkan
-                                            </span>
-                                        @endif
-
-                                    </td>
-
-                                    {{-- DENDA --}}
-                                    {{-- <td class="px-6 py-4 text-center">
-
-                                        @if($item->denda > 0)
-                                            <span class="text-red-600 font-bold">
-                                                Rp {{ number_format($item->denda, 0, ',', '.') }}
-                                            </span>
-                                        @else
-                                            <span class="text-gray-500">-</span>
-                                        @endif
-
-                                    </td> --}}
-
-                                    {{-- DENDA --}}
-                                    <td class="px-6 py-4 text-center">
-
-                                        @php
-                                            $denda = 0;
-
-                                            // hanya hitung jika status dipinjam
-                                            if($item->status == 'dipinjam') {
-
-                                                $today = \Carbon\Carbon::now();
-
-                                                $tanggalKembali = \Carbon\Carbon::parse($item->tanggal_kembali);
-
-                                                if($today->gt($tanggalKembali)) {
-
-                                                    $hariTelat = $tanggalKembali->diffInDays($today);
-
-                                                    $denda = $hariTelat * 1000;
-                                                }
-
-                                            }
-
-                                            // jika sudah dikembalikan
-                                            elseif($item->status == 'dikembalikan') {
-
-                                                $denda = $item->denda;
-
-                                            }
-                                        @endphp
-
-                                        @if($denda > 0)
-
-                                            <span class="text-red-600 font-bold">
-                                                Rp {{ number_format($denda, 0, ',', '.') }}
-                                            </span>
-
-                                        @else
-
-                                            <span class="text-gray-500">
-                                                -
-                                            </span>
-
-                                        @endif
-
-                                    </td>
-
-                                    {{-- AKSI --}}
-                                    <td class="px-6 py-4 text-center">
-
-                                        <div class="flex flex-col gap-2">
-
-                                            <a href="{{ route('pinjam.show', $item->id) }}"
-                                               class="px-3 py-2 bg-blue-500 text-white text-xs rounded">
-                                                Detail
-                                            </a>
-
-                                            {{-- 🔥 TAMBAHAN: BATAL (BISA ADMIN & USER, HANYA PENDING) --}}
-                                            @if($item->status == 'pending')
-                                                <form action="{{ route('pinjam.batal', $item->id) }}"
-                                                      method="POST">
-
-                                                    @csrf
-                                                    @method('PUT')
-
-                                                    <button type="submit"
-                                                            onclick="return confirm('Batalkan peminjaman ini?')"
-                                                            class="px-3 py-2 bg-gray-500 text-white text-xs rounded hover:bg-gray-600 w-full">
-
-                                                        Batal
-
-                                                    </button>
-
-                                                </form>
-                                            @endif
-
-                                            {{-- SETUJUI --}}
-                                            @if(Auth::user()->role == 'admin' && $item->status == 'pending')
-
-                                                <form action="{{ route('pinjam.setujui', $item->id) }}"
-                                                      method="POST">
-
-                                                    @csrf
-                                                    @method('PUT')
-
-                                                    <button type="submit"
-                                                            onclick="return confirm('Setujui peminjaman ini?')"
-                                                            class="w-full px-3 py-2 bg-green-500 text-white text-xs rounded hover:bg-green-600">
-
-                                                        Setujui
-
-                                                    </button>
-
-                                                </form>
-
-                                            @endif
-
-                                            {{-- KEMBALIKAN --}}
-                                            @if(Auth::user()->role == 'admin' && $item->status == 'dipinjam')
-
-                                                <form action="{{ route('pinjam.kembalikan', $item->id) }}"
-                                                      method="POST">
-
-                                                    @csrf
-                                                    @method('PUT')
-
-                                                    <button type="submit"
-                                                            onclick="return confirm('Buku sudah dikembalikan?')"
-                                                            class="w-full px-3 py-2 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600">
-
-                                                        Kembalikan
-
-                                                    </button>
-
-                                                </form>
-
-                                            @endif
-
-                                            {{-- HAPUS --}}
-                                            @if(Auth::user()->role == 'admin')
-
-                                                <form action="{{ route('pinjam.destroy', $item->id) }}"
-                                                      method="POST">
-
-                                                    @csrf
-                                                    @method('DELETE')
-
-                                                    <button type="submit"
-                                                            onclick="return confirm('Hapus data ini?')"
-                                                            class="w-full px-3 py-2 bg-red-500 text-white text-xs rounded hover:bg-red-600">
-
-                                                        Hapus
-
-                                                    </button>
-
-                                                </form>
-
-                                            @endif
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            @empty
-                                <tr>
-                                    <td colspan="9" class="px-6 py-10 text-center text-gray-500">
-                                        Belum ada data peminjaman
-                                    </td>
-                                </tr>
-                            @endforelse
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                <div class="p-6 border-t">
-                    {{ $pinjam->links() }}
-                </div>
-
             </div>
+            <div class="card-body">
+                <form method="GET"
+                    action="{{ route('pinjam.index') }}">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <input type="text"
+                                    name="search"
+                                    class="form-control"
+                                    value="{{ request('search') }}"
+                                    placeholder="Cari Nama Member / Judul Buku / Status">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary">
+                                        <i class="fas fa-search"></i>
+                                        Cari
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <table id="example1"
+                    class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th width="50">No</th>
+                            <!-- <th width="80">
+                                Cover
+                            </th> -->
+                            <th>
+                                Buku
+                            </th>
+                            <th>
+                                Peminjam
+                            </th>
+                            <th width="120">
+                                Kelas
+                            </th>
+                            <th width="170">
+                                Tanggal
+                            </th>
+                            <th width="80">
+                                Durasi
+                            </th>
+                            <th width="70">
+                                Jumlah
+                            </th>
+                            <th width="110">
+                                Status
+                            </th>
+                            <th width="120">
+                                Denda
+                            </th>
+                            <th width="120">
+                                Status Denda
+                            </th>
+                            <th width="260">
+                                Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($pinjam as $item)
+                        <tr>
+                            <td class="text-center">
+                                {{ $loop->iteration }}
+                            </td>
+                            <!-- <td class="text-center">
+                                @if($item->buku->cover)
+                                <img src="{{ asset('storage/'.$item->buku->cover) }}"
+                                    class="img-thumbnail"
+                                    style="width:70px;height:90px;object-fit:cover;">
+                                @else
+                                <div class="bg-secondary text-white text-center"
+                                    style="width:70px;height:90px;line-height:90px;">
+                                    No Cover
+                                </div>
+                                @endif
+                            </td> -->
+                            <td>
+                                <strong>
+                                    {{ $item->buku->judul }}
+                                </strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ $item->buku->pengarang }}
+                                </small>
+                            </td>
+                            <td>
+                                <strong>
+                                    {{ $item->user->name }}
+                                </strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ $item->user->id_register ?? '-' }}
+                                </small>
+                            </td>
+                            <td>
+                                {{ $item->user->kelas->nama_kelas ?? '-' }}
+                            </td>
+                            <td>
+                                <small>
+                                    <strong>Pinjam</strong>
+                                    <br>
+                                    {{ $item->tanggal_pinjam }}
+                                    <hr class="my-1">
+                                    <strong>Kembali</strong>
+                                    <br>
+                                    {{ $item->tanggal_kembali }}
 
-        </div>
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                {{ $item->durasi_pinjam }} Hari
+                            </td>
+                            <td class="text-center">
+                                {{ $item->jumlah }}
+                            </td>
+                            <td class="text-center">
+                                @if($item->status=='pending')
+                                <span class="badge badge-warning">
+                                    Pending
+                                </span>
+                                @elseif($item->status=='dipinjam')
+                                <span class="badge badge-primary">
+                                    Dipinjam
+                                </span>
+                                @elseif($item->status=='dikembalikan')
+                                <span class="badge badge-success">
+                                    Dikembalikan
+                                </span>
+                                @elseif($item->status=='dibatalkan')
+                                <span class="badge badge-secondary">
+                                    Dibatalkan
+                                </span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if($item->denda_otomatis > 0)
+                                <span class="text-danger font-weight-bold">
+                                    Rp {{ number_format($item->denda_otomatis,0,',','.') }}
+                                </span>
+                                @else
+                                <span class="text-success">Rp 0</span>
+                                @endif
+                            </td>
 
+                            <td class="text-center">
+                                @if($item->denda_otomatis==0)
+                                <span class="badge badge-success">Tidak Ada</span>
+                                @elseif($item->pembayaranDenda)
+                                <span class="badge badge-primary">Lunas</span>
+                                @else
+                                <span class="badge badge-danger">Belum Dibayar</span>
+                                @endif
+                            </td>
+
+                            <td class="text-center">
+
+                                <a href="{{ route('pinjam.show',$item->id) }}" class="btn btn-info btn-sm mb-1" title="Detail">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                @if(auth()->user()->role=='admin' && $item->status=='pending')
+                                <a href="{{ route('peminjaman-manual.edit',$item->id) }}" class="btn btn-warning btn-sm mb-1" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                @endif
+
+                                @if($item->status=='pending')
+                                <form action="{{ route('pinjam.batal',$item->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-secondary btn-sm mb-1" onclick="return confirm('Batalkan peminjaman ini?')">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                                @endif
+
+                                @if(auth()->user()->role=='admin' && $item->status=='pending')
+                                <form action="{{ route('pinjam.setujui',$item->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-success btn-sm mb-1" onclick="return confirm('Setujui peminjaman ini?')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                @endif
+
+                                @if(auth()->user()->role=='admin' && $item->status=='dipinjam')
+                                <form action="{{ route('pinjam.kembalikan',$item->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-warning btn-sm mb-1" onclick="return confirm('Buku sudah dikembalikan?')">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </form>
+                                @endif
+
+                                @if(auth()->user()->role=='admin' && $item->status=='dikembalikan' && $item->denda_otomatis>0)
+
+                                @if(!$item->pembayaranDenda)
+                                <a href="{{ route('pembayaran-denda.create',$item->id) }}" class="btn btn-primary btn-sm mb-1" title="Bayar Denda">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </a>
+                                @else
+                                <a href="{{ route('pembayaran-denda.show',$item->pembayaranDenda->id) }}" class="btn btn-success btn-sm mb-1" title="Sudah Dibayar">
+                                    <i class="fas fa-check-circle"></i>
+                                </a>
+                                @endif
+
+                                @endif
+
+                                @if(auth()->user()->role=='admin')
+                                <form action="{{ route('pinjam.destroy',$item->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm mb-1" onclick="return confirm('Hapus data ini?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                                @endif
+
+                            </td>
+
+                        </tr>
+
+                        @empty
+
+                        <tr>
+                            <td colspan="12" class="text-center text-muted">
+                                Belum ada data peminjaman.
+                            </td>
+                        </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <th>No</th>
+                            <!-- <th>Cover</th> -->
+                            <th>Buku</th>
+                            <th>Peminjam</th>
+                            <th>Kelas</th>
+                            <th>Tanggal</th>
+                            <th>Durasi</th>
+                            <th>Jumlah</th>
+                            <th>Status</th>
+                            <th>Denda</th>
+                            <th>Status Denda</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </tfoot>
+                            </table>
     </div>
+</div>
+</div>
+</section>
+@endsection
 
-</x-app-layout>
+@section('javascript')
+<script>
+$(function () {
+
+    $("#example1").DataTable({
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        ordering: true,
+        info: true,
+        paging: true,
+        searching: true,
+        buttons: [
+            "copy",
+            "csv",
+            "excel",
+            "pdf",
+            "print",
+            "colvis"
+        ],
+        language: {
+            emptyTable: "Belum ada data peminjaman.",
+            zeroRecords: "Data tidak ditemukan",
+            search: "Cari :",
+            paginate: {
+                first: "Awal",
+                last: "Akhir",
+                next: "Berikutnya",
+                previous: "Sebelumnya"
+            }
+        }
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+});
+</script>
+@endsection

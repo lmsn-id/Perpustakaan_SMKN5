@@ -1,61 +1,46 @@
-<x-app-layout>
+@extends('tampilan.app')
+@section('title', 'Master Kategori')
 
-    <x-slot name="header">
-        Master Kategori
-    </x-slot>
+@section('content')
+<section class="content">
+    <div class="container-fluid">
 
-    <div class="py-6">
+        @include('tampilan.alert')
 
-        <div class="max-w-7xl mx-auto">
+        <div class="card">
 
-            @if(session('success'))
+            <div class="card-header">
 
-                <div class="bg-green-200 text-green-800 p-3 rounded mb-4">
-                    {{ session('success') }}
-                </div>
+                <h3 class="card-title">
+                    Data Kategori
+                </h3>
 
-            @endif
+                <div class="card-tools">
 
-            <div class="bg-white p-6 rounded shadow">
+                    <a href="{{ route('kategori.create') }}"
+                        class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Tambah
+                    </a>
 
-                <div class="flex justify-between items-center mb-4">
-
-                    <h2 class="text-xl font-bold">
-                        Data Kategori
-                    </h2>
-
-                    <div class="flex gap-2">
-
-                        <a href="{{ route('kategori.trash') }}"
-                           class="bg-gray-700 text-white px-4 py-2 rounded">
-
-                            Trash
-
-                        </a>
-
-                        <a href="{{ route('kategori.create') }}"
-                           class="bg-blue-500 text-white px-4 py-2 rounded">
-
-                            + Tambah
-
-                        </a>
-
-                    </div>
+                    <a href="{{ route('kategori.trash') }}"
+                        class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i> Trash
+                    </a>
 
                 </div>
 
-                <table class="w-full border">
+            </div>
 
-                    <thead class="bg-gray-100">
+            <div class="card-body">
 
+                <table id="example1" class="table table-bordered table-striped">
+
+                    <thead>
                         <tr>
-
-                            <th class="border p-3">No</th>
-                            <th class="border p-3">Nama Kategori</th>
-                            <th class="border p-3">Aksi</th>
-
+                            <th width="60">No</th>
+                            <th>Nama Kategori</th>
+                            <th width="170">Aksi</th>
                         </tr>
-
                     </thead>
 
                     <tbody>
@@ -64,49 +49,38 @@
 
                         <tr>
 
-                            <td class="border p-3">
-                                {{ $loop->iteration }}
-                            </td>
+                            <td>{{ $loop->iteration }}</td>
 
-                            <td class="border p-3">
-                                {{ $item->nama_kategori }}
-                            </td>
+                            <td>{{ $item->nama_kategori }}</td>
 
-                            <td class="border p-3">
+                            <td>
 
-                                <div class="flex gap-2">
+                                <a href="{{ route('kategori.show', $item->id) }}"
+                                    class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i>
+                                </a>
 
-                                    <a href="{{ route('kategori.show', $item->id) }}"
-                                       class="w-20 text-center bg-green-500 text-white px-3 py-2 rounded">
+                                <a href="{{ route('kategori.edit', $item->id) }}"
+                                    class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
 
-                                        Detail
+                                <form action="{{ route('kategori.destroy', $item->id) }}"
+                                    method="POST"
+                                    style="display:inline-block;">
 
-                                    </a>
+                                    @csrf
+                                    @method('DELETE')
 
-                                    <a href="{{ route('kategori.edit', $item->id) }}"
-                                       class="w-20 text-center bg-yellow-500 text-white px-3 py-2 rounded">
+                                    <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
 
-                                        Edit
+                                        <i class="fas fa-trash"></i>
 
-                                    </a>
+                                    </button>
 
-                                    <form action="{{ route('kategori.destroy', $item->id) }}"
-                                          method="POST">
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="submit"
-                                                onclick="return confirm('Hapus data?')"
-                                                class="w-20 bg-red-500 text-white px-3 py-2 rounded">
-
-                                            Hapus
-
-                                        </button>
-
-                                    </form>
-
-                                </div>
+                                </form>
 
                             </td>
 
@@ -116,10 +90,9 @@
 
                         <tr>
 
-                            <td colspan="3"
-                                class="text-center p-4">
+                            <td colspan="3" class="text-center">
 
-                                Data kosong
+                                Data kategori belum tersedia.
 
                             </td>
 
@@ -129,16 +102,46 @@
 
                     </tbody>
 
-                </table>
+                    <tfoot>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Kategori</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </tfoot>
 
-                <div class="mt-4">
-                    {{ $kategori->links() }}
-                </div>
+                </table>
 
             </div>
 
         </div>
 
     </div>
+</section>
+@endsection
 
-</x-app-layout>
+@section('javascript')
+<script>
+    $(function() {
+
+        $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            ordering: true,
+            info: true,
+            paging: true,
+            searching: true,
+            buttons: [
+                "copy",
+                "csv",
+                "excel",
+                "pdf",
+                "print",
+                "colvis"
+            ]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    });
+</script>
+@endsection
